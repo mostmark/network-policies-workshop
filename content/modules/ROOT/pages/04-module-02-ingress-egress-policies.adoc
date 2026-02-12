@@ -1,4 +1,4 @@
-= Module 2: Implementing Ingress and Egress Policies
+= Module 2: Implementing ingress and egress policies
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1
@@ -193,7 +193,7 @@ Egress policies work similarly to ingress policies but control outbound traffic:
 
 Important considerations for egress:
 
-* Blocking DNS (port 53) will prevent pods from resolving service names
+* Blocking DNS (port 5353) will prevent pods from resolving service names
 * You typically need to allow DNS traffic in any egress policy
 * Egress rules can specify destination pods, namespaces, or IP blocks
 
@@ -448,7 +448,7 @@ oc describe networkpolicy deny-all-egress-test
 oc describe networkpolicy allow-test-to-hello
 ----
 
-== Learning Outcomes
+== Learning outcomes
 
 By completing this module, you should now understand:
 

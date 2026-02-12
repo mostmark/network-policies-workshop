@@ -1,4 +1,4 @@
-= Module 1: Understanding Network Policy Basics
+= Module 1: Understanding network policy basics
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1
@@ -429,7 +429,7 @@ curl -s --connect-timeout 5 http://service:port
 
 . If commands hang indefinitely, check your network connectivity to the cluster.
 
-== Learning Outcomes
+== Learning outcomes
 
 By completing this module, you should now understand:
 

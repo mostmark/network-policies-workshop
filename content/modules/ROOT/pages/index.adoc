@@ -21,7 +21,7 @@ This workshop is designed for developers and platform engineers who want to unde
 
 Before starting this workshop, you should have:
 
-* Basic familiarity with Kubernetes concepts (pods, namespaces, services)
+* Basic familiarity with Kubernetes concepts (pods, namespaces, and services)
 * Command line experience (Linux/Unix)
 * Access to a web browser
 
@@ -45,4 +45,4 @@ You can work at your own pace.
 
 == Let's get started!
 
-Click on **Workshop Overview** in the navigation to begin your learning journey.
+Select **Workshop Overview** in the navigation to begin your learning journey.

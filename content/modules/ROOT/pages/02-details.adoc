@@ -7,13 +7,13 @@
 
 === Full workshop (1 hour)
 
-* **Module 1**: Understanding Network Policy Basics (20 minutes)
-* **Module 2**: Implementing Ingress and Egress Policies (25 minutes)
-* **Module 3**: Cross-Namespace Policies and Troubleshooting (15 minutes)
+* **Module 1**: Understanding network policy basics (20 minutes)
+* **Module 2**: Implementing ingress and egress policies (25 minutes)
+* **Module 3**: Cross-namespace policies and troubleshooting (15 minutes)
 
 === Abbreviated workshop (30 minutes)
 
-* **Module 1**: Understanding Network Policy Basics (15 minutes)
+* **Module 1**: Understanding network policy basics (15 minutes)
 * **Module 2**: Basic ingress policy only (15 minutes)
 
 == Technical requirements

@@ -1,4 +1,4 @@
-= Module 3: Cross-Namespace Policies and Troubleshooting
+= Module 3: Cross-namespace policies and troubleshooting
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1
@@ -464,7 +464,7 @@ oc get networkpolicies -n <destination-namespace>
 
 . Remember: ingress policies are checked on the destination, egress policies on the source. Both must allow the traffic for it to succeed.
 
-== Learning Outcomes
+== Learning outcomes
 
 By completing this module, you should now understand:
 

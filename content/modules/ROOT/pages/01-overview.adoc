@@ -41,7 +41,7 @@ This workshop is designed for:
 You should have:
 
 * Basic command line experience (Linux/Unix), you've used a terminal before
-* Understanding of Kubernetes concepts (pods, namespaces, services)
+* Understanding of Kubernetes concepts (pods, namespaces, and services)
 * Access to a computer with internet connectivity
 * Willingness to learn (no prior network policy experience required)
 
