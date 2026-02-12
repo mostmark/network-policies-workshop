@@ -242,7 +242,7 @@ networkpolicy.networking.k8s.io/deny-all-egress-test created
 +
 [source,bash,role=execute]
 ----
-oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com
+oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com/en
 ----
 +
 The command should time out. All outbound traffic from the test pod is now blocked, including DNS resolution.
