@@ -16,6 +16,7 @@ By the end of this module, you'll be able to:
 * Apply a systematic troubleshooting methodology for network policy issues
 * Use diagnostic commands to identify which policies are blocking traffic
 
+[#exercise-1-implement-cross-namespace-policies]
 == Exercise 1: Implement cross-namespace policies
 
 ACME's backend team deploys APIs in a dedicated namespace. The frontend team, working in a separate namespace, needs to reach those APIs. You'll set up this multi-namespace scenario and create policies that allow only the required cross-namespace traffic.
@@ -218,6 +219,7 @@ image::cross-namespace-policy.png[Cross-namespace network policy allowing fronte
 
 You've implemented ACME's multi-team network isolation requirement.
 
+[#exercise-2-troubleshoot-network-policy-issues]
 == Exercise 2: Troubleshoot network policy issues
 
 ACME's teams will inevitably encounter connectivity issues as network policies are rolled out. You need a repeatable troubleshooting methodology that any team member can follow.

@@ -16,6 +16,7 @@ By the end of this module, you'll be able to:
 * Create egress policies to restrict outbound traffic from pods
 * Combine ingress and egress policies for comprehensive network control
 
+[#exercise-1-allow-traffic-from-openshift-platform-services]
 == Exercise 1: Allow traffic from OpenShift platform services
 
 ACME's development team has reported that their application routes stopped working after the deny-all policy was applied in Module 1. This is expected: the deny-all policy blocks all ingress traffic, including traffic from the OpenShift ingress controller that serves routes.
@@ -175,6 +176,7 @@ image::ingress-policies-overview.png[Network policies allowing platform traffic,
 
 You've addressed ACME's first concern: applications exposed via routes now work correctly alongside the deny-all policy.
 
+[#exercise-2-implement-egress-policies]
 == Exercise 2: Implement egress policies
 
 ACME's security team has a second requirement: "We need to control what external services our pods can reach. A compromised pod shouldn't be able to communicate with arbitrary external endpoints."
