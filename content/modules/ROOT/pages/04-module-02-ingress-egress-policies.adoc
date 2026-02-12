@@ -318,7 +318,7 @@ Expected output:
 +
 [source,bash,role=execute]
 ----
-oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com
+oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com/en
 ----
 +
 This should time out. The test pod can reach the hello pod but cannot reach external services.
