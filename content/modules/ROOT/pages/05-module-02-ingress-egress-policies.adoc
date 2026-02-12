@@ -1,0 +1,482 @@
+= Module 2: Implementing Ingress and Egress Policies
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+After your successful demonstration of network policy basics, ACME Corporation's security team is impressed but has follow-up requirements. "We need to control not just which pods can receive traffic, but also which external services our pods can reach," the security lead explains. "And our applications exposed via routes have stopped working since we applied the deny-all policy."
+
+In this module, you'll address both concerns by implementing ingress policies that allow OpenShift platform traffic and egress policies that control outbound communication from pods.
+
+== Learning objectives
+
+By the end of this module, you'll be able to:
+
+* Allow traffic from OpenShift ingress controllers so routes work with deny-all policies
+* Allow traffic from OpenShift monitoring and platform services
+* Create egress policies to restrict outbound traffic from pods
+* Combine ingress and egress policies for comprehensive network control
+
+== Exercise 1: Allow traffic from OpenShift platform services
+
+ACME's development team has reported that their application routes stopped working after the deny-all policy was applied in Module 1. This is expected: the deny-all policy blocks all ingress traffic, including traffic from the OpenShift ingress controller that serves routes.
+
+You need to create policies that allow OpenShift platform services to reach the application pods while maintaining the deny-all baseline.
+
+=== Verify the problem
+
+. Make sure you're in the correct project from Module 1:
++
+[source,bash,role=execute]
+----
+oc project network-policy-test
+----
+
+. Create a route for the hello application:
++
+[source,bash,role=execute]
+----
+oc expose service hello
+----
++
+Expected output:
++
+----
+route.route.openshift.io/hello exposed
+----
+
+. Get the route URL:
++
+[source,bash,role=execute]
+----
+oc get route hello -o jsonpath='{.spec.host}{"\n"}'
+----
+
+. Try to access the route using curl. This will fail because the deny-all policy blocks ingress controller traffic:
++
+[source,bash,role=execute]
+----
+HELLO_ROUTE=$(oc get route hello -o jsonpath='{.spec.host}')
+curl -s --connect-timeout 5 http://$HELLO_ROUTE
+----
++
+The command should time out or return an error. The deny-all policy is blocking the OpenShift ingress controller from reaching the hello pod.
+
+=== Allow ingress controller traffic
+
+OpenShift labels the ingress namespace with `policy-group.network.openshift.io/ingress: ""`. You can use this label in a `namespaceSelector` to allow traffic from the ingress controller.
+
+. Create a network policy that allows traffic from the OpenShift ingress controller to the hello pod:
++
+[source,bash,role=execute]
+----
+cat << 'EOF' | oc apply -f -
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-from-openshift-ingress
+spec:
+  podSelector:
+    matchLabels:
+      deployment: hello
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          policy-group.network.openshift.io/ingress: ""
+EOF
+----
++
+Expected output:
++
+----
+networkpolicy.networking.k8s.io/allow-from-openshift-ingress created
+----
+
+. Test the route again. It should now work:
++
+[source,bash,role=execute]
+----
+HELLO_ROUTE=$(oc get route hello -o jsonpath='{.spec.host}')
+curl -s http://$HELLO_ROUTE | grep Hello
+----
++
+Expected output:
++
+----
+<h1>Hello, world from nginx!</h1>
+----
+
+=== Allow OpenShift monitoring traffic
+
+ACME also needs OpenShift monitoring to scrape metrics from their pods. Without an allow policy, the monitoring stack cannot reach the pods.
+
+. Create a network policy that allows traffic from OpenShift monitoring:
++
+[source,bash,role=execute]
+----
+cat << 'EOF' | oc apply -f -
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-from-openshift-monitoring
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          network.openshift.io/policy-group: monitoring
+EOF
+----
++
+Expected output:
++
+----
+networkpolicy.networking.k8s.io/allow-from-openshift-monitoring created
+----
+
+. Verify all your network policies:
++
+[source,bash,role=execute]
+----
+oc get networkpolicies
+----
++
+Expected output:
++
+----
+NAME                             POD-SELECTOR        AGE
+allow-from-openshift-ingress     deployment=hello    2m
+allow-from-openshift-monitoring  <none>              30s
+allow-test-to-hello              deployment=hello    10m
+deny-all                         <none>              15m
+----
+
+=== Verify
+
+Confirm that the route is accessible while pod-to-pod restrictions remain in place:
+
+[source,bash,role=execute]
+----
+HELLO_ROUTE=$(oc get route hello -o jsonpath='{.spec.host}')
+echo "Route test:" && curl -s --connect-timeout 5 http://$HELLO_ROUTE | grep Hello
+echo "Pod-to-pod test (should fail):" && oc exec deploy/hello -- curl -s --connect-timeout 5 test:8080 || echo "Blocked as expected"
+----
+
+Verification checklist:
+
+* Route to hello application is accessible
+* OpenShift monitoring can reach pods
+* Pod-to-pod restrictions from Module 1 are still enforced
+* The deny-all baseline is still active
+
+// TODO: Add screenshot
+image::ingress-policies-overview.png[Network policies allowing platform traffic,link=self,window=blank,width=700,title="OpenShift Platform Ingress Policies"]
+
+You've addressed ACME's first concern: applications exposed via routes now work correctly alongside the deny-all policy.
+
+== Exercise 2: Implement egress policies
+
+ACME's security team has a second requirement: "We need to control what external services our pods can reach. A compromised pod shouldn't be able to communicate with arbitrary external endpoints."
+
+Egress policies control outbound traffic from pods. Without egress policies, pods can freely connect to any destination, internal or external.
+
+=== Understand egress policies
+
+Egress policies work similarly to ingress policies but control outbound traffic:
+
+* **Without egress policy**: Pods can connect to any destination
+* **With empty egress policy**: All outbound traffic is blocked (deny-all egress)
+* **With egress rules**: Only specified destinations are allowed
+
+Important considerations for egress:
+
+* Blocking DNS (port 53) will prevent pods from resolving service names
+* You typically need to allow DNS traffic in any egress policy
+* Egress rules can specify destination pods, namespaces, or IP blocks
+
+=== Create a deny-all egress policy
+
+. First, verify that the test pod can currently make outbound connections. Try to reach an external service:
++
+[source,bash,role=execute]
+----
+oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com
+----
++
+Expected output:
++
+----
+200
+----
++
+The pod can freely reach external services.
+
+. Create a deny-all egress policy for the test pod:
++
+[source,bash,role=execute]
+----
+cat << 'EOF' | oc apply -f -
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: deny-all-egress-test
+spec:
+  podSelector:
+    matchLabels:
+      deployment: test
+  policyTypes:
+  - Egress
+EOF
+----
++
+Expected output:
++
+----
+networkpolicy.networking.k8s.io/deny-all-egress-test created
+----
+
+. Test that the outbound connection is now blocked:
++
+[source,bash,role=execute]
+----
+oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com
+----
++
+The command should time out. All outbound traffic from the test pod is now blocked, including DNS resolution.
+
+. Verify that the test pod can no longer reach the hello pod either (egress is blocked in all directions):
++
+[source,bash,role=execute]
+----
+oc exec deploy/test -- curl -s --connect-timeout 5 hello:8080
+----
++
+This should also time out. Even though the ingress policy allows traffic from test to hello, the egress policy on the test pod blocks the outbound connection.
+
+=== Allow DNS and specific egress traffic
+
+A deny-all egress policy that blocks DNS makes pods unable to resolve any service names. You need to allow DNS traffic and then selectively allow the destinations the test pod needs.
+
+. Replace the deny-all egress policy with one that allows DNS and communication with the hello pod:
++
+[source,bash,role=execute]
+----
+cat << 'EOF' | oc apply -f -
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: deny-all-egress-test
+spec:
+  podSelector:
+    matchLabels:
+      deployment: test
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: openshift-dns
+    ports:
+    - port: 5353
+      protocol: UDP
+    - port: 5353
+      protocol: TCP
+  - to:
+    - podSelector:
+        matchLabels:
+          deployment: hello
+    ports:
+    - port: 8080
+      protocol: TCP
+EOF
+----
++
+Expected output:
++
+----
+networkpolicy.networking.k8s.io/deny-all-egress-test configured
+----
+
+. Test that the test pod can reach the hello pod again:
++
+[source,bash,role=execute]
+----
+oc exec deploy/test -- curl -s hello:8080 | grep Hello
+----
++
+Expected output:
++
+----
+<h1>Hello, world from nginx!</h1>
+----
+
+. Verify that external access is still blocked:
++
+[source,bash,role=execute]
+----
+oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com
+----
++
+This should time out. The test pod can reach the hello pod but cannot reach external services.
+
+=== Verify
+
+Review the complete set of network policies now in effect:
+
+[source,bash,role=execute]
+----
+oc get networkpolicies
+----
+
+Expected output:
+
+----
+NAME                             POD-SELECTOR        AGE
+allow-from-openshift-ingress     deployment=hello    10m
+allow-from-openshift-monitoring  <none>              8m
+allow-test-to-hello              deployment=hello    20m
+deny-all                         <none>              25m
+deny-all-egress-test             deployment=test     5m
+----
+
+Test the combined policies:
+
+[source,bash,role=execute]
+----
+echo "=== Test 1: test -> hello (should succeed) ==="
+oc exec deploy/test -- curl -s --connect-timeout 5 hello:8080 | grep Hello
+
+echo "=== Test 2: test -> external (should fail) ==="
+oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com || echo "Blocked as expected"
+
+echo "=== Test 3: hello -> test (should fail) ==="
+oc exec deploy/hello -- curl -s --connect-timeout 5 test:8080 || echo "Blocked as expected"
+
+echo "=== Test 4: route -> hello (should succeed) ==="
+HELLO_ROUTE=$(oc get route hello -o jsonpath='{.spec.host}')
+curl -s --connect-timeout 5 http://$HELLO_ROUTE | grep Hello
+----
+
+Verification checklist:
+
+* test pod can reach hello pod on port 8080
+* test pod cannot reach external services
+* hello pod cannot reach test pod
+* Route to hello application works
+* DNS resolution works for the test pod
+
+// TODO: Add screenshot
+image::egress-policy-applied.png[Network policies with egress controls,link=self,window=blank,width=700,title="Egress Policy Applied"]
+
+You've successfully addressed ACME's second concern: pods now have controlled outbound access.
+
+== Troubleshooting
+
+**Issue**: Route still not working after allowing ingress controller traffic
+
+**Solution**:
+
+. Verify the ingress namespace label:
++
+[source,bash]
+----
+oc get namespace openshift-ingress --show-labels
+----
++
+Look for the label `policy-group.network.openshift.io/ingress`. If the label name differs in your cluster version, adjust the `namespaceSelector` accordingly.
+
+. Check that your policy targets the correct pods:
++
+[source,bash]
+----
+oc get pods --show-labels
+oc describe networkpolicy allow-from-openshift-ingress
+----
+
+**Issue**: DNS resolution fails after applying egress policy
+
+**Solution**:
+
+. Verify the OpenShift DNS namespace name and labels:
++
+[source,bash]
+----
+oc get namespace openshift-dns --show-labels
+----
+
+. Check the DNS port. OpenShift DNS uses port 5353 by default (not port 53):
++
+[source,bash]
+----
+oc get svc -n openshift-dns
+----
+
+. Ensure your egress policy allows both UDP and TCP on the DNS port.
+
+**Issue**: Egress policy applied but pod can still reach external services
+
+**Solution**:
+
+. Verify the policy includes `policyTypes: ["Egress"]`. Without this field, a policy with only `ingress` rules does not affect egress traffic.
+
+. Check that the `podSelector` matches the correct pods:
++
+[source,bash]
+----
+oc get pods --show-labels
+oc describe networkpolicy deny-all-egress-test
+----
+
+**Issue**: Pod can resolve DNS but cannot connect to allowed pod
+
+**Solution**:
+
+. Remember that both ingress AND egress policies must allow the traffic. If you have a deny-all ingress policy, you also need an ingress allow policy on the destination pod.
+
+. Verify the complete traffic path:
++
+[source,bash]
+----
+# Check egress policy on source pod
+oc describe networkpolicy deny-all-egress-test
+
+# Check ingress policy on destination pod
+oc describe networkpolicy allow-test-to-hello
+----
+
+== Learning Outcomes
+
+By completing this module, you should now understand:
+
+* How OpenShift ingress controllers interact with network policies and require explicit allow rules
+* The role of namespace labels like `policy-group.network.openshift.io/ingress` in cross-namespace policies
+* How egress policies control outbound traffic and follow the same deny-all-then-allow pattern as ingress
+* The importance of allowing DNS traffic in egress policies to maintain service name resolution
+* How ingress and egress policies work together to provide comprehensive network controls
+
+== Module summary
+
+You've extended ACME's network security implementation to cover both inbound and outbound traffic control.
+
+**What you accomplished for ACME:**
+
+* Restored route access by allowing OpenShift ingress controller traffic
+* Enabled monitoring by allowing OpenShift monitoring to scrape pod metrics
+* Implemented egress controls to prevent pods from reaching unauthorized external services
+* Combined ingress and egress policies for comprehensive network security
+
+**Business impact realized:**
+
+* **Application availability**: Routes and monitoring work correctly alongside security policies
+* **Data exfiltration prevention**: Compromised pods cannot communicate with arbitrary external endpoints
+* **Defense in depth**: Both inbound and outbound traffic are now controlled
+
+**Your journey progress:**
+
+You've moved from basic pod-to-pod isolation to comprehensive ingress and egress controls that address real-world operational requirements.
+
+**Next steps:**
+
+Module 3 will cover cross-namespace policies and advanced troubleshooting techniques for managing network policies across a multi-team OpenShift environment.

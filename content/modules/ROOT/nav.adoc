@@ -1,7 +1,20 @@
-* xref:module-01.adoc[1. RPM Native Container]
-** xref:module-01.adoc#repositories[Repositories]
-** xref:module-01.adoc#software[Software]
+* xref:index.adoc[Home]
 
-* xref:module-02.adoc[2. GitHub Sourced Container]
-** xref:module-02.adoc#prerequisites[Install Prerequisites]
-** xref:module-02.adoc#container[Enable Container]
+* xref:01-overview.adoc[Workshop Overview]
+
+* xref:02-details.adoc[Workshop Details]
+
+* xref:03-module-01-network-policy-basics.adoc[Module 1: Network Policy Basics]
+** xref:03-module-01-network-policy-basics.adoc#exercise-1-explore-default-networking-behavior[Exercise 1: Explore Default Networking]
+** xref:03-module-01-network-policy-basics.adoc#exercise-2-create-a-deny-all-policy[Exercise 2: Create Deny-All Policy]
+** xref:03-module-01-network-policy-basics.adoc#exercise-3-create-a-selective-allow-policy[Exercise 3: Create Selective Allow Policy]
+
+* xref:05-module-02-ingress-egress-policies.adoc[Module 2: Ingress and Egress Policies]
+** xref:05-module-02-ingress-egress-policies.adoc#exercise-1-allow-traffic-from-openshift-platform-services[Exercise 1: Allow Platform Traffic]
+** xref:05-module-02-ingress-egress-policies.adoc#exercise-2-implement-egress-policies[Exercise 2: Implement Egress Policies]
+
+* xref:06-module-03-cross-namespace-troubleshooting.adoc[Module 3: Cross-Namespace and Troubleshooting]
+** xref:06-module-03-cross-namespace-troubleshooting.adoc#exercise-1-implement-cross-namespace-policies[Exercise 1: Cross-Namespace Policies]
+** xref:06-module-03-cross-namespace-troubleshooting.adoc#exercise-2-troubleshoot-network-policy-issues[Exercise 2: Troubleshoot Policies]
+
+* xref:04-conclusion.adoc[Conclusion and Next Steps]

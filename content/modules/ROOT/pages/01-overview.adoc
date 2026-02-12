@@ -1,0 +1,98 @@
+= Workshop Overview
+:toc:
+:toc-placement: preamble
+:icons: font
+
+== Your role and mission
+
+You're a developer at ACME Corporation, and you've been assigned to evaluate network security for the company's shared OpenShift platform.
+
+ACME uses OpenShift as an application platform for various types of applications, from microservices to monolithic applications. As OpenShift is a shared environment, the security team needs clarification on what is required when applications need to communicate outside their namespace. Your manager has explained: "We need to build a clear list of network dependencies and ensure secure communication between services."
+
+**Your assignment**: Evaluate Kubernetes network policies and determine how they can address ACME's network security requirements.
+
+**The objective**: Demonstrate how network policies can control pod-to-pod communication and prevent unauthorized access between application tiers.
+
+== Success criteria for your mission
+
+By the end of this workshop, you'll have practical network policy skills to address ACME's security challenges:
+
+* Understand default pod networking behavior in OpenShift
+* Create ingress policies to control incoming traffic to pods
+* Create egress policies to control outgoing traffic from pods
+* Test and validate that network policies are enforced correctly
+* Troubleshoot common connectivity issues caused by network policies
+
+**Technical outcome**: You'll have hands-on experience with network policies that directly applies to ACME's current security requirements.
+
+**Business benefit**: A proven approach to network segmentation that improves security posture and meets compliance requirements.
+
+== Target audience
+
+This workshop is designed for:
+
+* Developers who need to secure their applications in shared clusters
+* Platform engineers implementing network security policies
+* DevOps engineers looking to understand network isolation
+* Anyone interested in Kubernetes network security
+
+== What you need to succeed
+
+You should have:
+
+* Basic command line experience (Linux/Unix), you've used a terminal before
+* Understanding of Kubernetes concepts (pods, namespaces, services)
+* Access to a computer with internet connectivity
+* Willingness to learn (no prior network policy experience required)
+
+== ACME Corporation's security challenges
+
+**The situation**: ACME Corporation needs to improve network security for their shared OpenShift platform where multiple teams deploy applications.
+
+**Project timeline**: Evaluate network policies and implement a proof-of-concept within the current project cycle.
+
+**Current challenges** (operational pain points):
+
+* **Open communication by default**: All pods can communicate with any other pod in the cluster, creating security risks
+* **Unclear network dependencies**: Teams don't have visibility into which services actually need to communicate
+* **Compliance requirements**: Security audits require network segmentation between application tiers
+* **Incident response**: When security incidents occur, lateral movement between pods is too easy
+
+**The opportunity**: Kubernetes network policies can address these challenges, and you've been selected to evaluate their feasibility for ACME's use case.
+
+**Technical perspective**: "Network policies have proven benefits at other organizations, but I need to evaluate how they would work with our specific applications and infrastructure."
+
+== Your vision of success
+
+If network policies prove effective for ACME's use case, here are the potential improvements:
+
+**Immediate improvements** (short-term):
+
+* **Controlled communication**: Pods can only communicate with explicitly allowed services
+* **Clear network dependencies**: Network policies document which services need to communicate
+
+**Strategic benefits** (longer-term):
+
+* **Improved security posture**: Reduced attack surface and limited lateral movement
+* **Compliance readiness**: Network segmentation meets regulatory requirements
+* **Incident containment**: Compromised pods cannot easily access other services
+
+**Success metric**: A demonstrable improvement in network security that can be presented to stakeholders as a viable solution for ACME's operational challenges.
+
+== Common questions
+
+**"Do network policies work with existing applications?"**
+
+Yes. Network policies are applied at the network level and don't require application changes. Your existing applications continue to work, you're just controlling which traffic is allowed.
+
+**"What happens to existing connections when I apply a policy?"**
+
+Existing connections are typically preserved. New policies affect new connection attempts. Always test in a non-production environment first.
+
+**"Can I start with deny-all and add exceptions?"**
+
+Yes, and this is the recommended approach. Start by denying all traffic, then explicitly allow only what's needed. This follows the principle of least privilege.
+
+**"What if I lock myself out?"**
+
+Network policies are namespaced resources. If you apply a policy that blocks all traffic, you can still use `oc` or `kubectl` commands to modify or delete the policy. The API server communication is not affected by NetworkPolicy resources.

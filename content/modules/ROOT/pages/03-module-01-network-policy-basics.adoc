@@ -1,0 +1,462 @@
+= Module 1: Understanding Network Policy Basics
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+Your security team at ACME Corporation has raised concerns about the default networking behavior in OpenShift. "All pods can talk to each other by default," they explain. "We need to understand this and implement controls."
+
+By default, all pods and virtual machines in an OpenShift project are accessible from other pods, VMs, and endpoints in the cluster. This open communication model enables flexibility but creates security risks. ACME needs to evaluate how Kubernetes network policies can address this challenge.
+
+In this module, you'll experience firsthand how network policies provide granular control over pod-to-pod communication.
+
+== Learning objectives
+
+By the end of this module, you'll be able to:
+
+* Verify that pods can communicate freely by default in OpenShift
+* Create a deny-all network policy to block all traffic to pods
+* Create a selective allow policy to permit specific traffic
+* Test and validate that network policies are enforced correctly
+
+== Exercise 1: Explore default networking behavior
+
+ACME's security team wants proof that pods can communicate freely by default. Let's set up a test environment and verify this behavior before implementing any network policies.
+
+You prepare to create test deployments and verify the default open communication model.
+
+=== Create the test environment
+
+. First, log in to the OpenShift cluster and verify your access:
++
+[source,bash,role=execute]
+----
+oc login -u %openshift_cluster_admin_username% -p %openshift_cluster_admin_password% %openshift_api_url%
+----
+
+. Create a new project for testing network policies:
++
+[source,bash,role=execute]
+----
+oc new-project network-policy-test
+----
++
+Expected output:
++
+----
+Now using project "network-policy-test" on server "..."
+----
+
+. Create two deployments that will communicate with each other. First, create a "hello" deployment:
++
+[source,bash,role=execute]
+----
+oc new-app --name hello --image quay.io/redhattraining/hello-world-nginx:v1.0
+----
+
+. Create a "test" deployment:
++
+[source,bash,role=execute]
+----
+oc new-app --name test --image quay.io/redhattraining/hello-world-nginx:v1.0
+----
+
+. Wait for both deployments to be ready:
++
+[source,bash,role=execute]
+----
+oc get pods -w
+----
++
+Wait until both pods show `1/1 Running` status, then press `Ctrl+C` to exit the watch.
+
+=== Verify default communication
+
+. Get the IP addresses of the pods:
++
+[source,bash,role=execute]
+----
+oc get pods -o wide
+----
++
+Note the IP addresses in the output. You'll need the IP address of the `hello` pod.
+
+. Test communication from the `test` pod to the `hello` pod using curl. Replace `<HELLO_POD_IP>` with the actual IP address:
++
+[source,bash,role=execute]
+----
+HELLO_POD_IP=$(oc get pod -l deployment=hello -o jsonpath='{.items[0].status.podIP}')
+oc exec deploy/test -- curl -s $HELLO_POD_IP:8080 | grep Hello
+----
++
+Expected output:
++
+----
+<h1>Hello, world from nginx!</h1>
+----
+
+. Also verify you can reach the hello service:
++
+[source,bash,role=execute]
+----
+oc exec deploy/test -- curl -s hello:8080 | grep Hello
+----
++
+Expected output:
++
+----
+<h1>Hello, world from nginx!</h1>
+----
+
+=== Verify
+
+You have confirmed that:
+
+* Pods can communicate with each other using pod IP addresses
+* Pods can communicate using service names
+* No network restrictions exist by default
+
+// TODO: Add screenshot
+image::default-communication-test.png[Terminal showing successful curl output between pods,link=self,window=blank,width=700,title="Default Pod Communication"]
+
+This demonstrates ACME's security concern: any pod can reach any other pod in the cluster without restrictions.
+
+== Exercise 2: Create a deny-all policy
+
+Now that you've demonstrated the security risk, let's implement ACME's first network security control: a deny-all policy that blocks all incoming traffic to pods in the namespace.
+
+=== Understand the deny-all pattern
+
+The deny-all network policy follows the principle of least privilege. With this pattern:
+
+* All pods in the namespace are selected (empty `podSelector`)
+* No ingress rules are defined, which means no incoming traffic is allowed
+* You must then create additional policies to explicitly allow required traffic
+
+=== Create the deny-all policy
+
+. Create the deny-all network policy:
++
+[source,bash,role=execute]
+----
+cat << 'EOF' | oc apply -f -
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: deny-all
+spec:
+  podSelector: {}
+EOF
+----
++
+Expected output:
++
+----
+networkpolicy.networking.k8s.io/deny-all created
+----
+
+. Verify the network policy was created:
++
+[source,bash,role=execute]
+----
+oc get networkpolicies
+----
++
+Expected output:
++
+----
+NAME       POD-SELECTOR   AGE
+deny-all   <none>         10s
+----
+
+=== Test the deny-all policy
+
+. Try to access the hello pod from the test pod. This should now fail:
++
+[source,bash,role=execute]
+----
+oc exec deploy/test -- curl -s --connect-timeout 5 hello:8080
+----
++
+Expected output: The command should time out or return no output, indicating the traffic is blocked.
+
+. Verify the policy is blocking traffic by checking from an external perspective. Try to access the hello service directly:
++
+[source,bash,role=execute]
+----
+HELLO_POD_IP=$(oc get pod -l deployment=hello -o jsonpath='{.items[0].status.podIP}')
+oc exec deploy/test -- curl -s --connect-timeout 5 $HELLO_POD_IP:8080
+----
++
+This should also time out.
+
+=== Verify
+
+Run the following to confirm the deny-all policy is working:
+
+[source,bash,role=execute]
+----
+oc get networkpolicies
+----
+
+Expected output:
+
+----
+NAME       POD-SELECTOR   AGE
+deny-all   <none>         1m
+----
+
+Verification checklist:
+
+* Network policy `deny-all` exists
+* Pod-to-pod communication is blocked
+* Service-based communication is blocked
+
+// TODO: Add screenshot
+image::deny-all-policy-applied.png[OpenShift console showing network policy,link=self,window=blank,width=700,title="Deny-All Network Policy Applied"]
+
+You have successfully implemented ACME's first security control. All traffic to pods in this namespace is now blocked by default.
+
+== Exercise 3: Create a selective allow policy
+
+ACME's development team reports that the `test` pod legitimately needs to communicate with the `hello` pod. Let's create a network policy that allows this specific traffic while maintaining the deny-all baseline.
+
+=== Understand network policy selectors
+
+Network policies use labels to select:
+
+* **Target pods**: Which pods the policy applies to (`spec.podSelector`)
+* **Source pods**: Which pods are allowed to send traffic (`spec.ingress[].from[].podSelector`)
+* **Source namespaces**: Which namespaces are allowed (`spec.ingress[].from[].namespaceSelector`)
+
+=== Create the allow-specific policy
+
+. First, check the labels on your pods:
++
+[source,bash,role=execute]
+----
+oc get pods --show-labels
+----
++
+Note the `deployment=hello` and `deployment=test` labels.
+
+. Create a network policy that allows traffic from the test pod to the hello pod on port 8080:
++
+[source,bash,role=execute]
+----
+cat << 'EOF' | oc apply -f -
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-test-to-hello
+spec:
+  podSelector:
+    matchLabels:
+      deployment: hello
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          deployment: test
+    ports:
+    - port: 8080
+      protocol: TCP
+EOF
+----
++
+Expected output:
++
+----
+networkpolicy.networking.k8s.io/allow-test-to-hello created
+----
+
+. Verify both network policies exist:
++
+[source,bash,role=execute]
+----
+oc get networkpolicies
+----
++
+Expected output:
++
+----
+NAME                  POD-SELECTOR        AGE
+allow-test-to-hello   deployment=hello    10s
+deny-all              <none>              5m
+----
+
+=== Test the selective allow policy
+
+. Test that the test pod can now reach the hello pod:
++
+[source,bash,role=execute]
+----
+oc exec deploy/test -- curl -s hello:8080 | grep Hello
+----
++
+Expected output:
++
+----
+<h1>Hello, world from nginx!</h1>
+----
+
+. Verify that the hello pod still cannot reach the test pod (the policy only allows one direction):
++
+[source,bash,role=execute]
+----
+oc exec deploy/hello -- curl -s --connect-timeout 5 test:8080
+----
++
+This should time out because no policy allows traffic to the test pod.
+
+. Verify that traffic on other ports is still blocked. Try port 8181:
++
+[source,bash,role=execute]
+----
+HELLO_POD_IP=$(oc get pod -l deployment=hello -o jsonpath='{.items[0].status.podIP}')
+oc exec deploy/test -- curl -s --connect-timeout 5 $HELLO_POD_IP:8181
+----
++
+This should time out because the policy only allows port 8080.
+
+=== Verify
+
+Run the following to confirm your policies are configured correctly:
+
+[source,bash,role=execute]
+----
+oc describe networkpolicy allow-test-to-hello
+----
+
+Expected output should show:
+
+----
+Name:         allow-test-to-hello
+Namespace:    network-policy-test
+...
+Spec:
+  PodSelector:     deployment=hello
+  Allowing ingress traffic:
+    To Port: 8080/TCP
+    From:
+      PodSelector: deployment=test
+----
+
+Verification checklist:
+
+* test pod can reach hello pod on port 8080
+* hello pod cannot reach test pod
+* Other ports are blocked
+* Policy is correctly scoped to deployment=hello pods
+
+// TODO: Add screenshot
+image::allow-specific-policy.png[Network policy details in OpenShift console,link=self,window=blank,width=700,title="Selective Allow Network Policy"]
+
+You have successfully implemented granular network access controls for ACME Corporation.
+
+== Troubleshooting
+
+**Issue**: Network policy applied but traffic still flows freely
+
+**Solution**:
+
+. Verify the network policy was created in the correct namespace:
++
+[source,bash]
+----
+oc get networkpolicies -n network-policy-test
+----
+
+. Check that the pod selector matches your pods:
++
+[source,bash]
+----
+oc get pods --show-labels
+----
+
+. Ensure the CNI plugin supports network policies. OVN-Kubernetes (OpenShift default) supports network policies.
+
+**Issue**: Legitimate traffic is being blocked unexpectedly
+
+**Solution**:
+
+. Review all network policies affecting the pod:
++
+[source,bash]
+----
+oc get networkpolicies -o yaml
+----
+
+. Remember that network policies are additive. If multiple policies select the same pod, the union of all rules applies.
+
+. Check if you need to allow OpenShift ingress or monitoring. See the allow-from-openshift-ingress example in Module 2.
+
+**Issue**: Cannot access pods via routes after applying deny-all
+
+**Solution**:
+
+OpenShift routes go through the ingress controller. You need to allow traffic from the openshift-ingress namespace:
+
+[source,yaml]
+----
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-openshift-ingress
+spec:
+  podSelector:
+    matchLabels:
+      deployment: hello
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          policy-group.network.openshift.io/ingress: ""
+----
+
+**Issue**: Commands time out when testing policies
+
+**Solution**:
+
+. The timeout is expected behavior when traffic is blocked. Use the `--connect-timeout` flag to fail faster:
++
+[source,bash]
+----
+curl -s --connect-timeout 5 http://service:port
+----
+
+. If commands hang indefinitely, check your network connectivity to the cluster.
+
+== Learning Outcomes
+
+By completing this module, you should now understand:
+
+* How pod networking works by default in OpenShift, with open communication between all pods
+* The deny-all pattern as a security baseline following the principle of least privilege
+* How to use pod selectors and namespace selectors to create targeted allow rules
+* How network policies are additive, meaning the union of all matching policies determines allowed traffic
+* The importance of testing network policies before applying them in production
+
+== Module summary
+
+You've successfully demonstrated network policy fundamentals and can now present this approach to ACME's security team.
+
+**What you accomplished for ACME:**
+
+* Verified that pods communicate freely by default, confirming the security risk
+* Implemented a deny-all policy to block all traffic as a security baseline
+* Created a selective allow policy to permit only required communication
+* Tested and validated that network policies are enforced correctly
+
+**Business impact realized:**
+
+* **Security posture**: Implemented the principle of least privilege for network access
+* **Compliance readiness**: Network segmentation now documented and enforced
+* **Risk reduction**: Lateral movement between pods is now controlled
+
+**Your journey progress:**
+
+You now have practical experience with network policy fundamentals and can implement basic network isolation for ACME's applications.
+
+**Next steps:**
+
+Module 2 will show you how to implement more advanced patterns including cross-namespace policies, egress controls, and allowing traffic from OpenShift platform services.

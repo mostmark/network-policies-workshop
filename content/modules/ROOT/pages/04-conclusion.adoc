@@ -1,0 +1,104 @@
+= Conclusion and next steps
+:icons: font
+
+Congratulations! You've completed the Network Policies Introduction workshop.
+
+== What you have learned
+
+Throughout this workshop, you've gained hands-on experience with:
+
+* How pod networking works by default in OpenShift, with open communication between all pods
+* The deny-all pattern as a security baseline following the principle of least privilege
+* How to use pod selectors and namespace selectors to create targeted allow rules
+* How to allow traffic from OpenShift platform services (ingress controllers, monitoring)
+* How egress policies control outbound traffic and prevent data exfiltration
+* How to implement cross-namespace policies using namespace labels
+* A systematic troubleshooting methodology for diagnosing network policy issues
+* How network policies are additive, meaning the union of all matching policies determines allowed traffic
+
+You now have the skills to implement comprehensive network segmentation in OpenShift to improve security posture and meet compliance requirements.
+
+== Key takeaways
+
+The most important concepts to remember:
+
+. **Default behavior is open**: By default, all pods can communicate with any other pod in the cluster. Network policies are required to restrict this communication.
+
+. **Deny-all is your foundation**: Start with a deny-all policy and explicitly allow only the traffic that's needed. This follows the principle of least privilege.
+
+. **Labels are the key**: Network policies use labels on pods and namespaces to identify traffic sources and destinations. Proper labeling strategy is essential for effective network policies.
+
+. **Policies are additive**: When multiple network policies select the same pod, the union of all rules determines what traffic is allowed. There's no deny rule, only allow rules that build on the deny-all baseline.
+
+. **Test before production**: Always test network policies in a non-production environment. Incorrect policies can break application communication.
+
+== Next steps
+
+Ready to continue your journey? Here are some recommended next steps:
+
+=== Recommended workshops
+
+Explore related workshops to expand your skills:
+
+* **OpenShift Security Fundamentals** - Learn additional security controls including RBAC, SCCs, and image security
+* **Service Mesh on OpenShift** - Implement zero-trust networking with mutual TLS and advanced traffic management
+* **OpenShift Administration** - Master cluster administration including network configuration and troubleshooting
+
+=== Documentation and resources
+
+Deepen your knowledge with these resources:
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/network_security/index[OpenShift Network Security Documentation^] - Complete guide to network security features
+* link:https://kubernetes.io/docs/concepts/services-networking/network-policies/[Kubernetes Network Policies Documentation^] - Upstream Kubernetes network policy concepts
+* link:https://developers.redhat.com/[Red Hat Developer Portal^] - Tutorials, guides, and developer resources
+
+=== Practice Projects
+
+Put your new skills to work:
+
+. **Secure a microservices application**: Take an existing multi-tier application and implement network policies to isolate each tier (frontend, backend, database).
+
+. **Document network dependencies**: Create a network policy audit for an existing namespace, documenting which pods communicate and creating policies to enforce those patterns.
+
+. **Implement AdminNetworkPolicy**: Explore cluster-wide network policies using AdminNetworkPolicy resources for baseline security across all namespaces.
+
+== References
+
+=== Official Red Hat Documentation
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html-single/network_security/index#network-policy[OpenShift Container Platform Network Policy Documentation^] - Comprehensive guide to configuring network policies in OpenShift, including examples and best practices
+
+=== Kubernetes Documentation
+
+* link:https://kubernetes.io/docs/concepts/services-networking/network-policies/[Kubernetes Network Policies^] - Upstream documentation explaining network policy concepts, syntax, and behavior
+
+* link:https://kubernetes.io/docs/concepts/services-networking/network-policies/#what-you-can-t-do-with-network-policies-at-least-not-yet[Network Policy Limitations^] - Important documentation about what network policies cannot do, helping set realistic expectations
+
+=== Additional Reading
+
+* link:https://www.redhat.com/en/topics/containers/what-is-kubernetes-networking[What is Kubernetes Networking?^] - Red Hat overview of Kubernetes networking concepts
+* link:https://cloud.redhat.com/learn[Red Hat Learning Portal^] - Free courses and learning paths for OpenShift and Kubernetes
+
+== Share Your Feedback
+
+Help us improve this workshop:
+
+* What did you find most valuable?
+* What could be improved?
+* What topics would you like to see covered in future workshops?
+
+Your feedback helps us create better learning experiences.
+
+== Thank You!
+
+Thank you for participating in this workshop. We hope you found it valuable and informative.
+
+You've taken an important step in securing your OpenShift applications. Network policies are a fundamental building block for defense-in-depth security, and the skills you've learned today will help you build more secure, compliant applications.
+
+Keep building, keep learning!
+
+---
+
+**Workshop**: Network Policies Introduction +
+**Completed**: {localdate} +
+**Platform**: Red Hat Showroom

@@ -1,19 +1,26 @@
 name: modules
-title: Default Title
+title: Network Policies Introduction
 version: master
 nav:
   - modules/ROOT/nav.adoc
 
 asciidoc:
   attributes:
-    lab_name: "I'm the lab_name var"
+    lab_name: "network-policies-introduction"
     release-version: master
     page-pagination: true
-    my_var: "foo"
-    guid: my-guid
-    ssh_user: devops
-    ssh_password: devops
-    ssh_command: ssh someone@example.com
+    ocp_version: "4.15"
+    # OpenShift Cluster Access
+    openshift_console_url: "%openshift_console_url%"
+    openshift_api_url: "%openshift_api_url%"
+    openshift_cluster_admin_username: "%openshift_cluster_admin_username%"
+    openshift_cluster_admin_password: "%openshift_cluster_admin_password%"
+    # Bastion Host Access
+    bastion_public_hostname: "%bastion_public_hostname%"
+    bastion_ssh_user_name: "%bastion_ssh_user_name%"
+    bastion_ssh_password: "%bastion_ssh_password%"
+    # Environment
+    guid: "%guid%"
     page-links:
     - url: https://redhat.com
       text: Red Hat
