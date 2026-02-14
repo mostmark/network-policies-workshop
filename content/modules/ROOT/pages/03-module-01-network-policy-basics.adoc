@@ -134,27 +134,63 @@ The deny-all network policy follows the principle of least privilege. With this 
 * No ingress rules are defined, which means no incoming traffic is allowed
 * You must then create additional policies to explicitly allow required traffic
 
-=== Create the deny-all policy
+=== Create the deny-all policy using the OpenShift console
 
-. Create the deny-all network policy:
+For this first network policy, you'll use the OpenShift web console to create the policy. This gives you a visual understanding of what a network policy contains before switching to the CLI for the remaining exercises.
+
+. Open the OpenShift console by clicking the link in your lab environment, or navigating to:
 +
-[source,bash,role=execute]
+[source,text]
 ----
-cat << 'EOF' | oc apply -f -
+{openshift_console_url}
+----
+
+. In the left sidebar, navigate to *Networking* > *NetworkPolicies*.
+
+. Make sure the *network-policy-test* project is selected in the project dropdown at the top.
++
+// TODO: Add screenshot of NetworkPolicies list page
+// image::console-networkpolicies-list.png[NetworkPolicies list in the OpenShift console]
+
+. Click *Create NetworkPolicy*.
+
+. In the *Form view* (the default), configure the following:
++
+--
+* *Name*: `deny-all`
+* *Pod selector*: Leave empty — this matches all pods in the namespace
+* *Ingress rules*: Do not add any — having no ingress rules means no incoming traffic is allowed
+--
++
+// TODO: Add screenshot of the Form view with deny-all configuration
+// image::console-networkpolicy-form.png[NetworkPolicy form view showing deny-all configuration]
+
+. Click *Create*.
+
+// TODO: Add screenshot
+image::deny-all-policy-applied.png[OpenShift console showing network policy,link=self,window=blank,width=700,title="Deny-All Network Policy Applied"]
+
+[TIP]
+====
+You can switch between the *Form view* and *YAML view* at any time when creating or editing a network policy. The YAML equivalent of the deny-all policy you just created looks like this:
+
+[source,yaml]
+----
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: deny-all
 spec:
   podSelector: {}
-EOF
 ----
-+
-Expected output:
-+
-----
-networkpolicy.networking.k8s.io/deny-all created
-----
+
+// TODO: Add screenshot of the YAML view
+// image::console-networkpolicy-yaml.png[NetworkPolicy YAML view]
+
+All subsequent policies in this workshop will use the CLI and YAML for efficiency, but you can always use the console to inspect or edit policies visually.
+====
+
+=== Verify the policy via CLI
 
 . Verify the network policy was created:
 +
@@ -212,9 +248,6 @@ Verification checklist:
 * Network policy `deny-all` exists
 * Pod-to-pod communication is blocked
 * Service-based communication is blocked
-
-// TODO: Add screenshot
-image::deny-all-policy-applied.png[OpenShift console showing network policy,link=self,window=blank,width=700,title="Deny-All Network Policy Applied"]
 
 You have successfully implemented ACME's first security control. All traffic to pods in this namespace is now blocked by default.
 
