@@ -157,9 +157,11 @@ For this first network policy, you'll use the OpenShift web console to create th
 . In the *Form view* (the default), configure the following:
 +
 --
-* *Name*: `deny-all`
+* *Policy name*: `deny-all`
 * *Pod selector*: Leave empty — this matches all pods in the namespace
+* *Policy type*: Leave empty — do not select Ingress or Egress
 * *Ingress rules*: Do not add any — having no ingress rules means no incoming traffic is allowed
+* *Egress rules*: Do not add any — having no egress rules means no outgoing traffic is allowed
 --
 +
 // TODO: Add screenshot of the Form view with deny-all configuration
