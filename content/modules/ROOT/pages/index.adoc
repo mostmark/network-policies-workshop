@@ -32,8 +32,8 @@ You will work in a pre-configured OpenShift cluster with all necessary tools ins
 You will have access to:
 
 * OpenShift cluster: {openshift_console_url}
-* Username: {openshift_cluster_admin_username}
-* Password: {openshift_cluster_admin_password}
+* Username: {openshift_username}
+* Password: {openshift_password}
 
 NOTE: All environment details and credentials are available in the lab interface.
 

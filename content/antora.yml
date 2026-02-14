@@ -13,8 +13,8 @@ asciidoc:
     # OpenShift Cluster Access
     openshift_console_url: "%openshift_console_url%"
     openshift_api_url: "%openshift_api_url%"
-    openshift_cluster_admin_username: "%openshift_cluster_admin_username%"
-    openshift_cluster_admin_password: "%openshift_cluster_admin_password%"
+    openshift_username: "%openshift_username%"
+    openshift_password: "%openshift_password%"
     # Bastion Host Access
     bastion_public_hostname: "%bastion_public_hostname%"
     bastion_ssh_user_name: "%bastion_ssh_user_name%"

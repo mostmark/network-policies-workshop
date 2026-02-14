@@ -31,7 +31,7 @@ You prepare to create test deployments and verify the default open communication
 +
 [source,bash,role=execute]
 ----
-oc login -u %openshift_cluster_admin_username% -p %openshift_cluster_admin_password% %openshift_api_url%
+oc login -u %openshift_username% -p %openshift_password% %openshift_api_url%
 ----
 
 . Create a new project for testing network policies:
