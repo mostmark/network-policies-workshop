@@ -165,12 +165,12 @@ For this first network policy, you'll use the OpenShift web console to create th
 --
 +
 // TODO: Add screenshot of the Form view with deny-all configuration
-// image::console-networkpolicy-form.png[NetworkPolicy form view showing deny-all configuration]
+image::console-networkpolicy-form.png[NetworkPolicy form view showing deny-all configuration,title="Create deny-all Network Policy"]
 
 . Click *Create*.
 
 // TODO: Add screenshot
-image::deny-all-policy-applied.png[OpenShift console showing network policy,link=self,window=blank,width=700,title="Deny-All Network Policy Applied"]
+image::deny-all-policy-applied.png[OpenShift console showing network policy,link=self,window=blank,width=700,title="deny-all Network Policy Applied"]
 
 [TIP]
 ====
@@ -178,12 +178,14 @@ You can switch between the *Form view* and *YAML view* at any time when creating
 
 [source,yaml]
 ----
-kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
 metadata:
   name: deny-all
+  namespace: network-policy-test
 spec:
   podSelector: {}
+  policyTypes: []
 ----
 
 // TODO: Add screenshot of the YAML view
