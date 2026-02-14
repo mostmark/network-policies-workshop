@@ -99,7 +99,7 @@ Expected output: OpenShift client and server version information
 
 [source,bash]
 ----
-oc login -u {openshift_username} -p {openshift_password} {openshift_api_url}
+oc login -u %openshift_username% -p %openshift_password% %openshift_api_url%
 ----
 
 **Problem**: "Permission denied" when creating resources
