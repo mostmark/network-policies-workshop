@@ -1,4 +1,4 @@
-= Workshop Details
+= Workshop details
 :toc:
 :toc-placement: preamble
 :icons: font
@@ -118,19 +118,6 @@ oc auth can-i create networkpolicies
 * Check the OpenShift web console for visual feedback
 * Ask your instructor if you encounter issues
 
-== Follow-up resources
-
-=== Next steps for participants
-
-* link:https://docs.redhat.com/en/documentation/openshift_container_platform/{ocp_version}/html/network_security/index#network-policy[OpenShift Network Policy Documentation^]
-* link:https://kubernetes.io/docs/concepts/services-networking/network-policies/[Kubernetes Network Policies Documentation^]
-* link:https://developers.redhat.com/[Red Hat Developer Portal^]
-
-=== Additional learning paths
-
-* **Intermediate**: Advanced network policy patterns and AdminNetworkPolicy
-* **Advanced**: Service mesh and zero-trust networking
-* **Certification**: Red Hat Certified Specialist in OpenShift Administration
 
 == Authors and contributors
 

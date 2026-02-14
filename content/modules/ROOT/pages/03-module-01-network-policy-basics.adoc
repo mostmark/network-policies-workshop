@@ -81,7 +81,7 @@ oc get pods -o wide
 +
 Note the IP addresses in the output. You'll need the IP address of the `hello` pod.
 
-. Test communication from the `test` pod to the `hello` pod using curl. Replace `<HELLO_POD_IP>` with the actual IP address:
+. Test communication from the `test` pod to the `hello` pod using curl:
 +
 [source,bash,role=execute]
 ----

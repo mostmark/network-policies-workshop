@@ -1,4 +1,4 @@
-= Workshop Overview
+= Workshop overview
 :toc:
 :toc-placement: preamble
 :icons: font
