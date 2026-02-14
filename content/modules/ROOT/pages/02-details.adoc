@@ -35,7 +35,6 @@ Participants have access to:
 === Network requirements
 
 * Internet connectivity for accessing the OpenShift console
-* Access to the bastion host terminal (provided in lab interface)
 
 == Environment setup
 
@@ -84,15 +83,6 @@ Expected output: OpenShift client and server version information
 
 |Password
 |{openshift_password}
-
-|Bastion Host
-|{bastion_public_hostname}
-
-|SSH User
-|{bastion_ssh_user_name}
-
-|SSH Password
-|{bastion_ssh_password}
 |===
 
 == Troubleshooting guide
