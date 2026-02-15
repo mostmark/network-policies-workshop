@@ -143,8 +143,7 @@ For this first network policy, you'll use the OpenShift web console to create th
 
 . Make sure the *network-policy-test* project is selected in the project dropdown at the top.
 +
-// TODO: Add screenshot of NetworkPolicies list page
-// image::console-networkpolicies-list.png[NetworkPolicies list in the OpenShift console]
+image::console-networkpolicies-list.png[NetworkPolicies list in the OpenShift console]
 
 . Click *Create NetworkPolicy*.
 
@@ -180,8 +179,7 @@ spec:
   policyTypes: []
 ----
 
-// TODO: Add screenshot of the YAML view
-// image::console-networkpolicy-yaml.png[NetworkPolicy YAML view]
+image::console-networkpolicy-yaml.png[NetworkPolicy YAML view]
 
 All subsequent policies in this workshop will use the CLI and YAML for efficiency, but you can always use the console to inspect or edit policies visually.
 ====
