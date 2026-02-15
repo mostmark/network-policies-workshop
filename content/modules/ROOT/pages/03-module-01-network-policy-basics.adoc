@@ -111,7 +111,6 @@ You have confirmed that:
 * Pods can communicate using service names
 * No network restrictions exist by default
 
-// TODO: Add screenshot
 image::default-communication-test.png[Terminal showing successful curl output between pods,link=self,window=blank,width=700,title="Default Pod Communication"]
 
 This demonstrates ACME's security concern: any pod can reach any other pod in the cluster without restrictions.
