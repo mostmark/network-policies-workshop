@@ -72,8 +72,7 @@ All CLI commands in this workshop are run in the OpenShift Web Terminal. The Web
 
 . Click the command-line terminal icon (*>_*) in the upper-right corner of the console masthead.
 +
-// TODO: Add screenshot of the Web Terminal icon in the masthead
-// image::web-terminal-icon.png[Web Terminal icon in the OpenShift console masthead]
+image::web-terminal-icon.png[Web Terminal icon in the OpenShift console masthead]
 
 . Select your project from the *Project* dropdown if prompted.
 
@@ -81,8 +80,10 @@ All CLI commands in this workshop are run in the OpenShift Web Terminal. The Web
 
 . The Web Terminal comes preinstalled with `oc`, `kubectl`, and other CLI tools, and is automatically logged in with your user credentials. No `oc login` is required.
 +
-// TODO: Add screenshot of the Web Terminal panel
-// image::web-terminal-panel.png[Web Terminal open in the OpenShift console]
+image::web-terminal-panel.png[Web Terminal open in the OpenShift console]
+. When started the terminal looks like the following
++
+image::web-terminal-panel2.png[Web Terminal open in the OpenShift console]
 
 [TIP]
 ====
@@ -146,7 +147,7 @@ oc auth can-i create networkpolicies
 
 == Authors and contributors
 
-**Primary Author**: Red Hat Technical Marketing Team
+**Primary Author**: Red Hat Solution Architect Team
 
 **Last Updated**: February 2026
 
@@ -154,5 +155,5 @@ oc auth can-i create networkpolicies
 
 **Contact Information**:
 
-* Workshop feedback: Submit issues via workshop repository
+* Workshop feedback: https://github.com/mostmark/network-policies-workshop/issues[Submit issues via workshop repository^]
 * Technical questions: Red Hat Developer Community
