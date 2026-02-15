@@ -223,25 +223,13 @@ This should also time out.
 
 === Verify
 
-Run the following to confirm the deny-all policy is working:
-
-[source,bash,role=execute]
-----
-oc get networkpolicies
-----
-
-Expected output:
-
-----
-NAME       POD-SELECTOR   AGE
-deny-all   <none>         1m
-----
-
 Verification checklist:
 
 * Network policy `deny-all` exists
 * Pod-to-pod communication is blocked
 * Service-based communication is blocked
+
+image::deny-all-test.png[Terminal showing blocked curl output between pods,link=self,window=blank,width=700,title="deny-all Network Policy Verification"]
 
 You have successfully implemented ACME's first security control. All traffic to pods in this namespace is now blocked by default.
 
@@ -378,7 +366,6 @@ Verification checklist:
 * Other ports are blocked
 * Policy is correctly scoped to deployment=hello pods
 
-// TODO: Add screenshot
 image::allow-specific-policy.png[Network policy details in OpenShift console,link=self,window=blank,width=700,title="Selective Allow Network Policy"]
 
 You have successfully implemented granular network access controls for ACME Corporation.
