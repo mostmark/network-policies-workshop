@@ -214,7 +214,6 @@ Verification checklist:
 * The deny-all baseline remains active in the backend namespace
 * Namespace labels are used to identify allowed source namespaces
 
-// TODO: Add screenshot
 image::cross-namespace-policy.png[Cross-namespace network policy allowing frontend to backend,link=self,window=blank,width=700,title="Cross-Namespace Network Policy"]
 
 You've implemented ACME's multi-team network isolation requirement.
@@ -405,7 +404,6 @@ Verification checklist:
 * Module 1 and Module 2 policies in network-policy-test still function correctly
 * You can systematically identify which policy is blocking or allowing traffic
 
-// TODO: Add screenshot
 image::troubleshooting-overview.png[Diagnostic output showing network policy troubleshooting,link=self,window=blank,width=700,title="Network Policy Troubleshooting"]
 
 == Troubleshooting
