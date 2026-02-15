@@ -171,7 +171,6 @@ Verification checklist:
 * Pod-to-pod restrictions from Module 1 are still enforced
 * The deny-all baseline is still active
 
-// TODO: Add screenshot
 image::ingress-policies-overview.png[Network policies allowing platform traffic,link=self,window=blank,width=700,title="OpenShift Platform Ingress Policies"]
 
 You've addressed ACME's first concern: applications exposed via routes now work correctly alongside the deny-all policy.
@@ -369,7 +368,6 @@ Verification checklist:
 * Route to hello application works
 * DNS resolution works for the test pod
 
-// TODO: Add screenshot
 image::egress-policy-applied.png[Network policies with egress controls,link=self,window=blank,width=700,title="Egress Policy Applied"]
 
 You've successfully addressed ACME's second concern: pods now have controlled outbound access.
