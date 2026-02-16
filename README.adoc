@@ -26,6 +26,39 @@ podman run --rm --name antora -v $PWD:/antora:z -p 8080:8080 -i -t ghcr.io/julia
 
 Then open http://localhost:8080 in your browser. When you make changes to the content, stop the container and run it again to see updates. Live-reload is not supported.
 
+== Cluster preparation
+
+When running this workshop on a shared OpenShift cluster, use the provided scripts to set up and tear down per-user resources.
+
+=== Prepare the cluster
+
+The `prepare-cluster.sh` script automates the following:
+
+* Installs the OpenShift Web Terminal operator
+* Creates 4 projects per user: `network-policy-test-userN`, `backend-team-userN`, `frontend-team-userN`, and `terminal-userN`
+* Labels `frontend-team-userN` with `team=frontend` (required for cross-namespace policies in Module 3)
+* Grants each user `admin` access to their projects
+* Pre-starts a Web Terminal DevWorkspace in each user's terminal project
+
+[source,sh]
+----
+./prepare-cluster.sh
+----
+
+You will be prompted for the number of users to prepare.
+
+=== Clean up the cluster
+
+The `cleanup-cluster.sh` script removes all resources created by the prepare script:
+
+* Deletes all per-user projects
+* Uninstalls the Web Terminal operator
+
+[source,sh]
+----
+./cleanup-cluster.sh
+----
+
 === Build and push a container image
 
 The `Containerfile` builds a UBI9-based container with Apache httpd that serves the pre-built workshop site on port 8080. The container runs as a non-root user and is suitable for deployment on OpenShift.
