@@ -23,11 +23,13 @@ ACME's backend team deploys APIs in a dedicated namespace. The frontend team, wo
 
 === Set up the multi-namespace environment
 
-. Create a namespace for the backend team:
+Two additional namespaces have been pre-created for your user: `backend-team-{OPENSHIFT_USERNAME}` and `frontend-team-{OPENSHIFT_USERNAME}`. The frontend namespace has been pre-labeled with `team=frontend` so it can be referenced in cross-namespace network policies.
+
+. Switch to the backend team namespace:
 +
 [source,bash,role=execute]
 ----
-oc new-project backend-team-%OPENSHIFT_USERNAME%
+oc project backend-team-%OPENSHIFT_USERNAME%
 ----
 
 . Deploy a backend API application:
@@ -64,11 +66,11 @@ Expected output:
 networkpolicy.networking.k8s.io/deny-all created
 ----
 
-. Create a namespace for the frontend team:
+. Switch to the frontend team namespace:
 +
 [source,bash,role=execute]
 ----
-oc new-project frontend-team-%OPENSHIFT_USERNAME%
+oc project frontend-team-%OPENSHIFT_USERNAME%
 ----
 
 . Deploy a frontend application:
@@ -107,20 +109,16 @@ This should time out. The deny-all policy in the backend namespace blocks all in
 
 === Create a cross-namespace allow policy
 
-To allow the frontend team's pods to reach the backend, you need a policy in the backend namespace that uses a `namespaceSelector`. First, label the frontend namespace so the policy can reference it.
+To allow the frontend team's pods to reach the backend, you need a policy in the backend namespace that uses a `namespaceSelector`. The frontend namespace has already been labeled with `team=frontend` by the cluster administrator, so the policy can reference it.
 
-. Label the frontend-team-{OPENSHIFT_USERNAME} namespace:
+. Verify the frontend namespace label exists:
 +
 [source,bash,role=execute]
 ----
-oc label namespace frontend-team-%OPENSHIFT_USERNAME% team=frontend
+oc get namespace frontend-team-%OPENSHIFT_USERNAME% --show-labels | grep team
 ----
 +
-Expected output:
-+
-----
-namespace/frontend-team-%OPENSHIFT_USERNAME% labeled
-----
+You should see the `team=frontend` label in the output.
 
 . Create a network policy in the backend namespace that allows traffic from the frontend namespace:
 +
@@ -419,12 +417,7 @@ image::troubleshooting-overview.png[Diagnostic output showing network policy tro
 oc get namespace frontend-team-%OPENSHIFT_USERNAME% --show-labels
 ----
 
-. If the label is missing, add it:
-+
-[source,bash]
-----
-oc label namespace frontend-team-%OPENSHIFT_USERNAME% team=frontend
-----
+. If the label is missing, contact your cluster administrator to add it. Labeling namespaces requires cluster-admin privileges.
 
 . Check that the policy is in the correct namespace (the destination namespace, not the source):
 +
