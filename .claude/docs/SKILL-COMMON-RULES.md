@@ -74,8 +74,8 @@ Every lab/demo module must end with:
 
 **Standard Attributes**:
 ```asciidoc
-:console_url: {openshift_console_url}
-:api_url: {openshift_api_url}
+:console_url: {OPENSHIFT_CONSOLE_URL}
+:api_url: {OPENSHIFT_API_URL}
 :user: {user_name}
 :password: {user_password}
 :namespace: {project_namespace}
@@ -420,9 +420,9 @@ Q2: Would you like to use placeholder attributes for now and get actual values l
 
 If YES:
 I'll use placeholder attributes:
-- {openshift_console_url}
+- {OPENSHIFT_CONSOLE_URL}
 - {user}, {password}
-- {openshift_api_url}
+- {OPENSHIFT_API_URL}
 
 You can update these later when you get Advanced settings.
 
@@ -536,9 +536,9 @@ I recommend these existing catalogs as a good base:
 **Share this with RHDP developers** when requesting AgV catalog creation.
 
 For now, I'll continue with placeholder attributes in your workshop/demo content:
-- {openshift_console_url}
+- {OPENSHIFT_CONSOLE_URL}
 - {user}, {password}
-- {openshift_api_url}
+- {OPENSHIFT_API_URL}
 
 → Proceeding to Step 3: Module-Specific Details
 ```
@@ -1400,7 +1400,7 @@ cloud_provider: none
 config: openshift-workloads  # OR cloud-vms-base for VM-based
 clusters:
 - default:
-    api_url: "{{ openshift_api_url }}"
+    api_url: "{{ OPENSHIFT_API_URL }}"
     api_token: "{{ openshift_api_key }}"
 
 # Collections
@@ -1474,8 +1474,8 @@ __meta__:
     propagate_provision_data:
     - name: openshift_api_ca_cert
       var: openshift_api_ca_cert
-    - name: openshift_api_url
-      var: openshift_api_url
+    - name: OPENSHIFT_API_URL
+      var: OPENSHIFT_API_URL
     - name: openshift_cluster_admin_token
       var: openshift_api_key
 ```
@@ -1629,8 +1629,8 @@ This shows all available UserInfo variables like:
 
 If NO:
 I can use common variables as placeholders:
-- {openshift_console_url}
-- {openshift_api_url}
+- {OPENSHIFT_CONSOLE_URL}
+- {OPENSHIFT_API_URL}
 - {user}
 - {password}
 - {bastion_public_hostname}
@@ -1657,8 +1657,8 @@ If user doesn't have deployed environment access:
    - **Note**: This is less reliable than deployed environment output
 
 **Common variables (fallback):**
-- `openshift_console_url` → `{openshift_console_url}`
-- `openshift_api_url` → `{openshift_api_url}`
+- `OPENSHIFT_CONSOLE_URL` → `{OPENSHIFT_CONSOLE_URL}`
+- `OPENSHIFT_API_URL` → `{OPENSHIFT_API_URL}`
 - `user_name` → `{user}`
 - `user_password` → `{password}`
 - `bastion_public_hostname` → `{bastion_public_hostname}`
@@ -1679,9 +1679,9 @@ If user doesn't have deployed environment access:
 - I'll extract UserInfo variables from this catalog's workloads
 - Use these variables as Showroom attributes in your workshop/demo modules
 - Example variables available:
-  - {openshift_console_url}
+  - {OPENSHIFT_CONSOLE_URL}
   - {user}, {password}
-  - {openshift_api_url}
+  - {OPENSHIFT_API_URL}
   - [workload-specific variables]
 
 → Proceeding to Step 3: Module-Specific Details

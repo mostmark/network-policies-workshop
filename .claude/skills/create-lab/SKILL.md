@@ -653,7 +653,7 @@ Now for this specific module:
    Q: Would you like to use placeholder attributes for now?
 
    If YES:
-   I'll use placeholders: {openshift_console_url}, {user}, {password}
+   I'll use placeholders: {OPENSHIFT_CONSOLE_URL}, {user}, {password}
    You can update these later when you get Advanced settings.
 
    If NO (RHDP internal team only):
@@ -735,8 +735,8 @@ This shows all available variables like:
 
 **If NO** (fallback):
 I'll use common placeholder variables:
-- `{openshift_console_url}`
-- `{openshift_api_url}`
+- `{OPENSHIFT_CONSOLE_URL}`
+- `{OPENSHIFT_API_URL}`
 - `{user}`
 - `{password}`
 - `{bastion_public_hostname}`
@@ -758,7 +758,7 @@ I'll use common placeholder variables:
 ```
 
 **CRITICAL: DO NOT Replace Variables with Actual Values**:
-- ALWAYS keep variables as placeholders: `{openshift_console_url}`
+- ALWAYS keep variables as placeholders: `{OPENSHIFT_CONSOLE_URL}`
 - NEVER replace with actual values like `https://console-openshift-console.apps.cluster-abc123.abc123.example.opentlc.com`
 - Showroom will replace these at runtime with actual deployment values
 - Each deployment gets different URLs - variables MUST stay dynamic
@@ -948,7 +948,7 @@ Before starting this workshop, you should have:
 
 {{ Brief description of the lab environment }}
 
-* OpenShift cluster: {openshift_console_url}
+* OpenShift cluster: {OPENSHIFT_CONSOLE_URL}
 * Login credentials will be provided
 
 == Let's get started!
@@ -1123,7 +1123,7 @@ By the end of this module, you will understand:
 
 Follow these steps:
 
-. Open the OpenShift Console at {openshift_console_url}
+. Open the OpenShift Console at {OPENSHIFT_CONSOLE_URL}
 . Navigate to Pipelines → Create Pipeline
 . Enter the pipeline name: my-first-pipeline
 . Add a task from the catalog
@@ -1367,7 +1367,7 @@ I'll automatically update `content/modules/ROOT/nav.adoc` - this is REQUIRED for
 
 **Assets**:
 - Images needed: 2 placeholders (see module for TODO comments)
-- Dynamic attributes used: {openshift_console_url}, {user}, {password}
+- Dynamic attributes used: {OPENSHIFT_CONSOLE_URL}, {user}, {password}
 
 **Next Steps**:
 1. Review module: content/modules/ROOT/pages/04-module-02-advanced.adoc
@@ -1777,19 +1777,19 @@ Q7: Exercise count? → 3
 [Reads AgnosticD workload]
 → Location: ~/work/code/agnosticd-v2/collections/ansible_collections/rhpds/rhods_demo/
 → Extracted UserInfo variables:
-  - openshift_console_url
+  - OPENSHIFT_CONSOLE_URL
   - rhods_dashboard_url
   - user_name
   - user_password
 
 [Generates module with:]
 - Variables mapped to Showroom attributes:
-  * {openshift_console_url}
+  * {OPENSHIFT_CONSOLE_URL}
   * {rhods_dashboard_url}
   * {user}
   * {password}
 - Commands using these variables
-- Example: "Log into OpenShift Console at {openshift_console_url}"
+- Example: "Log into OpenShift Console at {OPENSHIFT_CONSOLE_URL}"
 
 ✓ Created: content/modules/ROOT/pages/03-rhods-intro.adoc
 ✓ AgnosticV variables integrated

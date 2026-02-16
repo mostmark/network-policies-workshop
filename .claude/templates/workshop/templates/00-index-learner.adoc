@@ -31,7 +31,7 @@ Before starting this workshop, you should have:
 
 You will have access to:
 
-* OpenShift cluster: {openshift_console_url}
+* OpenShift cluster: {OPENSHIFT_CONSOLE_URL}
 * Username: {user}
 * Password: {password}
 

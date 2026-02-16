@@ -328,7 +328,7 @@ All skills MUST follow these contracts:
 
 ```asciidoc
 ✅ CORRECT:
-Log into OpenShift Console at {openshift_console_url}
+Log into OpenShift Console at {OPENSHIFT_CONSOLE_URL}
 Username: {openshift_cluster_admin_username}
 Tested on OpenShift {ocp_version}
 

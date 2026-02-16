@@ -11,10 +11,10 @@ asciidoc:
     page-pagination: true
     ocp_version: "4.15"
     # OpenShift Cluster Access
-    openshift_console_url: "%openshift_console_url%"
-    openshift_api_url: "%openshift_api_url%"
-    openshift_username: "%openshift_username%"
-    openshift_password: "%openshift_password%"
+    OPENSHIFT_CONSOLE_URL: "%OPENSHIFT_CONSOLE_URL%"
+    OPENSHIFT_API_URL: "%OPENSHIFT_API_URL%"
+    OPENSHIFT_USERNAME: "%OPENSHIFT_USERNAME%"
+    OPENSHIFT_PASSWORD: "%OPENSHIFT_PASSWORD%"
     # Environment
     guid: "%guid%"
     page-links:

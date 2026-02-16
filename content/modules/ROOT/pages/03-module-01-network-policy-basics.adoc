@@ -136,7 +136,7 @@ For this first network policy, you'll use the OpenShift web console to create th
 +
 [source,text]
 ----
-{openshift_console_url}
+{OPENSHIFT_CONSOLE_URL}
 ----
 
 . In the left sidebar, navigate to *Networking* > *NetworkPolicies*.

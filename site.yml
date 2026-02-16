@@ -1,7 +1,7 @@
 ---
 site:
   title: Network Policies Introduction
-  url: https://github.com/rhpds/showroom_template_nookbag
+  url: https://github.com/mostmark/network-policies-workshop
   start_page: modules::index.adoc
 
 content:

@@ -68,7 +68,7 @@ Expected output: OpenShift client and server version information
 
 All CLI commands in this workshop are run in the OpenShift Web Terminal. The Web Terminal runs directly in your browser — no local `oc` CLI installation is required.
 
-. Open the OpenShift console by navigating to `{openshift_console_url}`.
+. Open the OpenShift console by navigating to `{OPENSHIFT_CONSOLE_URL}`.
 
 . Click the command-line terminal icon (*>_*) in the upper-right corner of the console masthead.
 +
@@ -99,16 +99,16 @@ If the Web Terminal session times out or disconnects, click the terminal icon ag
 |Resource |Value
 
 |OpenShift Console
-|{openshift_console_url}
+|{OPENSHIFT_CONSOLE_URL}
 
 |API Server
-|{openshift_api_url}
+|{OPENSHIFT_API_URL}
 
 |Username
-|{openshift_username}
+|{OPENSHIFT_USERNAME}
 
 |Password
-|{openshift_password}
+|{OPENSHIFT_PASSWORD}
 |===
 
 == Troubleshooting guide
@@ -125,7 +125,7 @@ If the Web Terminal session times out or disconnects, click the terminal icon ag
 
 [source,bash]
 ----
-oc login -u %openshift_username% -p %openshift_password% %openshift_api_url%
+oc login -u %OPENSHIFT_USERNAME% -p %OPENSHIFT_PASSWORD% %OPENSHIFT_API_URL%
 ----
 
 **Problem**: "Permission denied" when creating resources

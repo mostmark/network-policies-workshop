@@ -561,7 +561,7 @@ Now for this specific module:
    Q: Would you like to use placeholder attributes for now?
 
    If YES:
-   I'll use placeholders: {openshift_console_url}, {user}, {password}
+   I'll use placeholders: {OPENSHIFT_CONSOLE_URL}, {user}, {password}
    You can update these later when you get Advanced settings.
 
    If NO (RHDP internal team only):
@@ -622,8 +622,8 @@ This shows all available variables like:
 
 **If NO** (fallback):
 I'll use common placeholder variables:
-- `{openshift_console_url}`
-- `{openshift_api_url}`
+- `{OPENSHIFT_CONSOLE_URL}`
+- `{OPENSHIFT_API_URL}`
 - `{user}`
 - `{password}`
 - `{bastion_public_hostname}`
@@ -870,7 +870,7 @@ Knowledge sections use bullets (*). Task/step sections use numbers (.).
 
 **What I do:**
 
-. Log into OpenShift Console at {openshift_console_url}
+. Log into OpenShift Console at {OPENSHIFT_CONSOLE_URL}
 . Navigate to Developer perspective
 . Click "+Add" → "Import from Git"
 . Enter repository URL and click Create
@@ -1042,7 +1042,7 @@ OpenShift reduces deployment time from weeks to minutes through self-service dev
 
 **Optional visual**: Before/after deployment timeline diagram showing 6-8 weeks vs 2 minutes
 
-* Log into OpenShift Console at {openshift_console_url}
+* Log into OpenShift Console at {OPENSHIFT_CONSOLE_URL}
   * Username: {user}
   * Password: {password}
 
@@ -1147,7 +1147,7 @@ I'll automatically add the module to `content/modules/ROOT/nav.adoc` - this is R
 **Assets**:
 - Diagrams needed: 3 placeholders (architecture, before/after, ROI chart)
 - Screenshots needed: 2 placeholders (UI demonstrations)
-- Dynamic attributes used: {openshift_console_url}, {demo_app_url}
+- Dynamic attributes used: {OPENSHIFT_CONSOLE_URL}, {demo_app_url}
 
 **Presenter Notes**:
 - Estimated presentation time: 25 minutes

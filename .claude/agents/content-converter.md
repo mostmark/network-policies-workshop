@@ -227,7 +227,7 @@ HTML                              AsciiDoc
 {openshift_cluster_console_url}
 {openshift_cluster_admin_username}
 {openshift_cluster_admin_password}
-{openshift_api_url}
+{OPENSHIFT_API_URL}
 
 // AWS (if applicable)
 {aws_console_url}
