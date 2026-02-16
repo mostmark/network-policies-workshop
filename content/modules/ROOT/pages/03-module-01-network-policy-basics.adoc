@@ -33,13 +33,13 @@ You prepare to create test deployments and verify the default open communication
 +
 [source,bash,role=execute]
 ----
-oc new-project network-policy-test
+oc new-project network-policy-test-%OPENSHIFT_USERNAME%
 ----
 +
 Expected output:
 +
 ----
-Now using project "network-policy-test" on server "..."
+Now using project "network-policy-test-%OPENSHIFT_USERNAME%" on server "..."
 ----
 
 . Create two deployments that will communicate with each other. First, create a "hello" deployment:
@@ -141,7 +141,7 @@ For this first network policy, you'll use the OpenShift web console to create th
 
 . In the left sidebar, navigate to *Networking* > *NetworkPolicies*.
 
-. Make sure the *network-policy-test* project is selected in the project dropdown at the top.
+. Make sure the *network-policy-test-{OPENSHIFT_USERNAME}* project is selected in the project dropdown at the top.
 +
 image::console-networkpolicies-list.png[NetworkPolicies list in the OpenShift console]
 
@@ -173,7 +173,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: deny-all
-  namespace: network-policy-test
+  namespace: network-policy-test-%OPENSHIFT_USERNAME%
 spec:
   podSelector: {}
   policyTypes: []
@@ -349,7 +349,7 @@ Expected output should show:
 
 ----
 Name:         allow-test-to-hello
-Namespace:    network-policy-test
+Namespace:    network-policy-test-%OPENSHIFT_USERNAME%
 ...
 Spec:
   PodSelector:     deployment=hello
@@ -380,7 +380,7 @@ You have successfully implemented granular network access controls for ACME Corp
 +
 [source,bash]
 ----
-oc get networkpolicies -n network-policy-test
+oc get networkpolicies -n network-policy-test-%OPENSHIFT_USERNAME%
 ----
 
 . Check that the pod selector matches your pods:

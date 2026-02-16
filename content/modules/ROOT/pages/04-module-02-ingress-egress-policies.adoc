@@ -29,7 +29,7 @@ You need to create policies that allow OpenShift platform services to reach the 
 +
 [source,bash,role=execute]
 ----
-oc project network-policy-test
+oc project network-policy-test-%OPENSHIFT_USERNAME%
 ----
 
 . Create a route for the hello application:

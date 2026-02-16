@@ -27,7 +27,7 @@ ACME's backend team deploys APIs in a dedicated namespace. The frontend team, wo
 +
 [source,bash,role=execute]
 ----
-oc new-project backend-team
+oc new-project backend-team-%OPENSHIFT_USERNAME%
 ----
 
 . Deploy a backend API application:
@@ -68,7 +68,7 @@ networkpolicy.networking.k8s.io/deny-all created
 +
 [source,bash,role=execute]
 ----
-oc new-project frontend-team
+oc new-project frontend-team-%OPENSHIFT_USERNAME%
 ----
 
 . Deploy a frontend application:
@@ -91,7 +91,7 @@ oc rollout status deployment/frontend-app --timeout=60s
 +
 [source,bash,role=execute]
 ----
-BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team -o jsonpath='{.spec.clusterIP}')
+BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.spec.clusterIP}')
 echo "Backend service IP: $BACKEND_SVC_IP"
 ----
 
@@ -99,8 +99,8 @@ echo "Backend service IP: $BACKEND_SVC_IP"
 +
 [source,bash,role=execute]
 ----
-BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team -o jsonpath='{.spec.clusterIP}')
-oc exec deploy/frontend-app -n frontend-team -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080
+BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.spec.clusterIP}')
+oc exec deploy/frontend-app -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080
 ----
 +
 This should time out. The deny-all policy in the backend namespace blocks all ingress traffic, including cross-namespace traffic.
@@ -109,24 +109,24 @@ This should time out. The deny-all policy in the backend namespace blocks all in
 
 To allow the frontend team's pods to reach the backend, you need a policy in the backend namespace that uses a `namespaceSelector`. First, label the frontend namespace so the policy can reference it.
 
-. Label the frontend-team namespace:
+. Label the frontend-team-{OPENSHIFT_USERNAME} namespace:
 +
 [source,bash,role=execute]
 ----
-oc label namespace frontend-team team=frontend
+oc label namespace frontend-team-%OPENSHIFT_USERNAME% team=frontend
 ----
 +
 Expected output:
 +
 ----
-namespace/frontend-team labeled
+namespace/frontend-team-%OPENSHIFT_USERNAME% labeled
 ----
 
 . Create a network policy in the backend namespace that allows traffic from the frontend namespace:
 +
 [source,bash,role=execute]
 ----
-cat << 'EOF' | oc apply -n backend-team -f -
+cat << 'EOF' | oc apply -n backend-team-%OPENSHIFT_USERNAME% -f -
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -156,8 +156,8 @@ networkpolicy.networking.k8s.io/allow-from-frontend created
 +
 [source,bash,role=execute]
 ----
-BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team -o jsonpath='{.spec.clusterIP}')
-oc exec deploy/frontend-app -n frontend-team -- curl -s $BACKEND_SVC_IP:8080 | grep Hello
+BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.spec.clusterIP}')
+oc exec deploy/frontend-app -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s $BACKEND_SVC_IP:8080 | grep Hello
 ----
 +
 Expected output:
@@ -170,21 +170,21 @@ Expected output:
 
 Confirm that only the frontend namespace has access. Pods from the original test namespace should still be blocked.
 
-. Test from the network-policy-test namespace:
+. Test from the network-policy-test-{OPENSHIFT_USERNAME} namespace:
 +
 [source,bash,role=execute]
 ----
-BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team -o jsonpath='{.spec.clusterIP}')
-oc exec deploy/test -n network-policy-test -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080
+BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.spec.clusterIP}')
+oc exec deploy/test -n network-policy-test-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080
 ----
 +
-This should time out. Only the frontend-team namespace is allowed.
+This should time out. Only the frontend-team-{OPENSHIFT_USERNAME} namespace is allowed.
 
 . Review the policies in the backend namespace:
 +
 [source,bash,role=execute]
 ----
-oc get networkpolicies -n backend-team
+oc get networkpolicies -n backend-team-%OPENSHIFT_USERNAME%
 ----
 +
 Expected output:
@@ -200,11 +200,11 @@ deny-all               <none>                 5m
 [source,bash,role=execute]
 ----
 echo "=== Test 1: frontend -> backend (should succeed) ==="
-BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team -o jsonpath='{.spec.clusterIP}')
-oc exec deploy/frontend-app -n frontend-team -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 | grep Hello
+BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.spec.clusterIP}')
+oc exec deploy/frontend-app -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 | grep Hello
 
-echo "=== Test 2: network-policy-test -> backend (should fail) ==="
-oc exec deploy/test -n network-policy-test -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 || echo "Blocked as expected"
+echo "=== Test 2: network-policy-test-%OPENSHIFT_USERNAME% -> backend (should fail) ==="
+oc exec deploy/test -n network-policy-test-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 || echo "Blocked as expected"
 ----
 
 Verification checklist:
@@ -241,22 +241,22 @@ A developer reports that a new `reporting` pod in the frontend namespace cannot 
 +
 [source,bash,role=execute]
 ----
-oc run reporting --image quay.io/redhattraining/hello-world-nginx:v1.0 -n frontend-team
+oc run reporting --image quay.io/redhattraining/hello-world-nginx:v1.0 -n frontend-team-%OPENSHIFT_USERNAME%
 ----
 
 . Wait for the pod to be ready:
 +
 [source,bash,role=execute]
 ----
-oc wait pod/reporting -n frontend-team --for=condition=Ready --timeout=60s
+oc wait pod/reporting -n frontend-team-%OPENSHIFT_USERNAME% --for=condition=Ready --timeout=60s
 ----
 
 . Confirm the connection fails:
 +
 [source,bash,role=execute]
 ----
-BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team -o jsonpath='{.spec.clusterIP}')
-oc exec reporting -n frontend-team -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080
+BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.spec.clusterIP}')
+oc exec reporting -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080
 ----
 +
 This times out. But the frontend namespace is allowed to reach the backend, so why is it blocked?
@@ -267,14 +267,14 @@ This times out. But the frontend namespace is allowed to reach the backend, so w
 +
 [source,bash,role=execute]
 ----
-oc get pod reporting -n frontend-team --show-labels
+oc get pod reporting -n frontend-team-%OPENSHIFT_USERNAME% --show-labels
 ----
 +
 Notice the label: `run=reporting`. Compare this with the frontend-app pod:
 +
 [source,bash,role=execute]
 ----
-oc get pods -n frontend-team --show-labels
+oc get pods -n frontend-team-%OPENSHIFT_USERNAME% --show-labels
 ----
 +
 The `frontend-app` pod has `deployment=frontend-app`, while the `reporting` pod has `run=reporting`.
@@ -285,20 +285,20 @@ The `frontend-app` pod has `deployment=frontend-app`, while the `reporting` pod 
 +
 [source,bash,role=execute]
 ----
-oc describe networkpolicy allow-from-frontend -n backend-team
+oc describe networkpolicy allow-from-frontend -n backend-team-%OPENSHIFT_USERNAME%
 ----
 +
 The policy allows traffic from pods in namespaces labeled `team=frontend`. It does not filter on specific pod labels within that namespace, so the namespace label should be sufficient.
 
-. Check the ingress policies more carefully. The `allow-from-frontend` policy uses a `namespaceSelector` without a `podSelector` under the `from` block, which means all pods in the frontend-team namespace should be allowed.
+. Check the ingress policies more carefully. The `allow-from-frontend` policy uses a `namespaceSelector` without a `podSelector` under the `from` block, which means all pods in the frontend-team-{OPENSHIFT_USERNAME} namespace should be allowed.
 
 === Step 3: Check for egress restrictions
 
-. Check if there are any network policies in the frontend-team namespace:
+. Check if there are any network policies in the frontend-team-{OPENSHIFT_USERNAME} namespace:
 +
 [source,bash,role=execute]
 ----
-oc get networkpolicies -n frontend-team
+oc get networkpolicies -n frontend-team-%OPENSHIFT_USERNAME%
 ----
 +
 If no egress policies exist in the frontend namespace, the issue is elsewhere. If the output shows `No resources found`, egress is unrestricted.
@@ -307,7 +307,7 @@ If no egress policies exist in the frontend namespace, the issue is elsewhere. I
 +
 [source,bash,role=execute]
 ----
-oc get namespace frontend-team --show-labels | grep team
+oc get namespace frontend-team-%OPENSHIFT_USERNAME% --show-labels | grep team
 ----
 +
 Expected: The namespace should have the `team=frontend` label.
@@ -318,9 +318,9 @@ Since the namespace label is correct and the policy allows all pods from the fro
 
 [source,bash,role=execute]
 ----
-BACKEND_POD_IP=$(oc get pod -l deployment=backend-api -n backend-team -o jsonpath='{.items[0].status.podIP}')
+BACKEND_POD_IP=$(oc get pod -l deployment=backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.items[0].status.podIP}')
 echo "Backend pod IP: $BACKEND_POD_IP"
-oc exec reporting -n frontend-team -- curl -s --connect-timeout 5 $BACKEND_POD_IP:8080 | grep Hello
+oc exec reporting -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_POD_IP:8080 | grep Hello
 ----
 
 If this succeeds, the issue was DNS-related. If it still fails, there may be an additional policy or the namespace label is missing.
@@ -331,8 +331,8 @@ If the reporting pod was blocked, it could be due to a missing namespace label o
 
 [source,bash,role=execute]
 ----
-BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team -o jsonpath='{.spec.clusterIP}')
-oc exec reporting -n frontend-team -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 | grep Hello
+BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.spec.clusterIP}')
+oc exec reporting -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 | grep Hello
 ----
 
 If connectivity still fails, the troubleshooting methodology reveals the exact point of failure, which you can then address with a targeted policy change.
@@ -345,21 +345,21 @@ Here is a reference of commands for troubleshooting network policies:
 +
 [source,bash,role=execute]
 ----
-oc get networkpolicies -n backend-team -o wide
+oc get networkpolicies -n backend-team-%OPENSHIFT_USERNAME% -o wide
 ----
 
 . **View policy details with selectors**:
 +
 [source,bash,role=execute]
 ----
-oc describe networkpolicies -n backend-team
+oc describe networkpolicies -n backend-team-%OPENSHIFT_USERNAME%
 ----
 
 . **Check pod labels**:
 +
 [source,bash,role=execute]
 ----
-oc get pods -n frontend-team --show-labels
+oc get pods -n frontend-team-%OPENSHIFT_USERNAME% --show-labels
 ----
 
 . **Check namespace labels**:
@@ -373,7 +373,7 @@ oc get namespaces --show-labels
 +
 [source,bash,role=execute]
 ----
-oc get networkpolicy allow-from-frontend -n backend-team -o yaml
+oc get networkpolicy allow-from-frontend -n backend-team-%OPENSHIFT_USERNAME% -o yaml
 ----
 
 === Verify
@@ -382,26 +382,26 @@ Run a comprehensive check across all namespaces to confirm the expected connecti
 
 [source,bash,role=execute]
 ----
-BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team -o jsonpath='{.spec.clusterIP}')
+BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.spec.clusterIP}')
 
 echo "=== frontend-app -> backend-api (should succeed) ==="
-oc exec deploy/frontend-app -n frontend-team -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 | grep Hello
+oc exec deploy/frontend-app -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 | grep Hello
 
 echo "=== reporting -> backend-api (should succeed) ==="
-oc exec reporting -n frontend-team -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 | grep Hello
+oc exec reporting -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 | grep Hello
 
-echo "=== test (network-policy-test) -> backend-api (should fail) ==="
-oc exec deploy/test -n network-policy-test -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 || echo "Blocked as expected"
+echo "=== test (network-policy-test-%OPENSHIFT_USERNAME%) -> backend-api (should fail) ==="
+oc exec deploy/test -n network-policy-test-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 || echo "Blocked as expected"
 
-echo "=== test -> hello (network-policy-test, should succeed) ==="
-oc exec deploy/test -n network-policy-test -- curl -s --connect-timeout 5 hello.network-policy-test:8080 | grep Hello
+echo "=== test -> hello (network-policy-test-%OPENSHIFT_USERNAME%, should succeed) ==="
+oc exec deploy/test -n network-policy-test-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 hello.network-policy-test-%OPENSHIFT_USERNAME%:8080 | grep Hello
 ----
 
 Verification checklist:
 
-* All pods in the frontend-team namespace can reach backend-api
+* All pods in the frontend-team-{OPENSHIFT_USERNAME} namespace can reach backend-api
 * Pods in other namespaces remain blocked from backend-api
-* Module 1 and Module 2 policies in network-policy-test still function correctly
+* Module 1 and Module 2 policies in network-policy-test-{OPENSHIFT_USERNAME} still function correctly
 * You can systematically identify which policy is blocking or allowing traffic
 
 image::troubleshooting-overview.png[Diagnostic output showing network policy troubleshooting,link=self,window=blank,width=700,title="Network Policy Troubleshooting"]
@@ -416,21 +416,21 @@ image::troubleshooting-overview.png[Diagnostic output showing network policy tro
 +
 [source,bash]
 ----
-oc get namespace frontend-team --show-labels
+oc get namespace frontend-team-%OPENSHIFT_USERNAME% --show-labels
 ----
 
 . If the label is missing, add it:
 +
 [source,bash]
 ----
-oc label namespace frontend-team team=frontend
+oc label namespace frontend-team-%OPENSHIFT_USERNAME% team=frontend
 ----
 
 . Check that the policy is in the correct namespace (the destination namespace, not the source):
 +
 [source,bash]
 ----
-oc get networkpolicies -n backend-team
+oc get networkpolicies -n backend-team-%OPENSHIFT_USERNAME%
 ----
 
 **Issue**: Policy works for some pods but not others in the same namespace
@@ -441,7 +441,7 @@ oc get networkpolicies -n backend-team
 +
 [source,bash]
 ----
-oc describe networkpolicy allow-from-frontend -n backend-team
+oc describe networkpolicy allow-from-frontend -n backend-team-%OPENSHIFT_USERNAME%
 ----
 
 . If the `from` block combines `namespaceSelector` and `podSelector` in the same item, both must match. If they are separate items, either can match (OR logic).
