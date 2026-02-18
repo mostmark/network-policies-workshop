@@ -6,6 +6,8 @@ The workshop uses a scenario-based approach where participants evaluate network 
 
 The content is built with Antora and published as a static site using the Red Hat Demo Platform (Showroom) UI theme.
 
+Preview the lab guide https://mostmark.github.io/network-policies-workshop/[here] 
+
 == Local development
 
 === Preview with Antora viewer (recommended)

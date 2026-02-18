@@ -66,6 +66,28 @@ else
   echo "No Web Terminal operator CSV found, skipping."
 fi
 
+# Remove the DevWorkspace custom resources used by the Operator, along with any related Kubernetes objects
+oc delete devworkspaces.workspace.devfile.io --all-namespaces --all --wait
+oc delete devworkspaceroutings.controller.devfile.io --all-namespaces --all --wait
+
+# Remove the CRDs used by the Operator
+oc delete customresourcedefinitions.apiextensions.k8s.io devworkspaceroutings.controller.devfile.io
+oc delete customresourcedefinitions.apiextensions.k8s.io devworkspaces.workspace.devfile.io
+oc delete customresourcedefinitions.apiextensions.k8s.io devworkspacetemplates.workspace.devfile.io
+oc delete customresourcedefinitions.apiextensions.k8s.io devworkspaceoperatorconfigs.controller.devfile.io
+
+# Remove the devworkspace-webhook-server deployment, mutating, and validating webhooks
+oc delete deployment/devworkspace-webhook-server -n openshift-operators
+oc delete mutatingwebhookconfigurations controller.devfile.io
+oc delete validatingwebhookconfigurations controller.devfile.io
+
+# Remove any remaining services, secrets, and config maps
+oc delete all --selector app.kubernetes.io/part-of=devworkspace-operator,app.kubernetes.io/name=devworkspace-webhook-server -n openshift-operators
+oc delete serviceaccounts devworkspace-webhook-server -n openshift-operators
+oc delete clusterrole devworkspace-webhook-server
+oc delete clusterrolebinding devworkspace-webhook-server
+
+
 echo
 echo "============================================"
 echo "Cluster cleanup complete!"

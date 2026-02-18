@@ -95,9 +95,12 @@ for i in $(seq 1 "$NUM_USERS"); do
 kind: DevWorkspace
 apiVersion: workspace.devfile.io/v1alpha2
 metadata:
-  name: web-terminal
+  name: terminal-web
   namespace: ${PROJECT_TERMINAL}
+  finalizers:
+    - rbac.controller.devfile.io
   annotations:
+    controller.devfile.io/devworkspace-source: web-terminal
     controller.devfile.io/restricted-access: "true"
   labels:
     console.openshift.io/terminal: "true"
