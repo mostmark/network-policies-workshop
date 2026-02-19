@@ -11,42 +11,35 @@
 * **Module 2**: Implementing ingress and egress policies (25 minutes)
 * **Module 3**: Cross-namespace policies and troubleshooting (15 minutes)
 
-=== Abbreviated workshop (30 minutes)
-
-* **Module 1**: Understanding network policy basics (15 minutes)
-* **Module 2**: Basic ingress policy only (15 minutes)
-
-== Technical requirements
-
-=== Software versions
-
-* Red Hat OpenShift {ocp_version} or later
-* OpenShift Web Terminal (built into the console)
-* Web browser (Chrome, Firefox, Safari, Edge)
-
-=== Environment access
+== Environment details
 
 Participants have access to:
 
 * Red Hat OpenShift cluster (provided during workshop)
-* Web Terminal in the OpenShift console (no local installation needed)
 * OpenShift web console
+* Web Terminal in the OpenShift console (no local installation needed)
 
-=== Network requirements
+== Access information
 
-* Internet connectivity for accessing the OpenShift console
+[cols="1,2"]
+|===
+|Resource |Value
 
-== Environment setup
+|OpenShift Console
+|{OPENSHIFT_CONSOLE_URL}
 
-=== Pre-configured for you
+|API Server
+|{OPENSHIFT_API_URL}
 
-Your lab environment is already set up with:
+|Username
+|{OPENSHIFT_USERNAME}
 
-* OpenShift cluster access
-* Web Terminal with `oc` CLI automatically authenticated
-* Sample applications ready to deploy
+|Password
+|{OPENSHIFT_PASSWORD}
+|===
 
-=== Using the Web Terminal
+
+== Using the Web Terminal
 
 All CLI commands in this workshop are run in the OpenShift Web Terminal. The Web Terminal runs directly in your browser — no local `oc` CLI installation is required.
 
@@ -92,69 +85,3 @@ oc version
 
 Expected output: OpenShift client and server version information
 
-== Environment details
-
-=== Access information
-
-[cols="1,2"]
-|===
-|Resource |Value
-
-|OpenShift Console
-|{OPENSHIFT_CONSOLE_URL}
-
-|API Server
-|{OPENSHIFT_API_URL}
-
-|Username
-|{OPENSHIFT_USERNAME}
-
-|Password
-|{OPENSHIFT_PASSWORD}
-|===
-
-== Troubleshooting guide
-
-=== Common setup issues
-
-**Problem**: "oc command not found"
-
-**Solution**: Make sure you are running commands in the Web Terminal in the OpenShift console (click the *>_* icon in the upper-right masthead). The `oc` CLI is preinstalled in the Web Terminal. If you are using a local terminal, switch to the Web Terminal instead.
-
-**Problem**: "Unable to connect to OpenShift cluster"
-
-**Solution**: Verify network connectivity and login credentials. Try logging in again:
-
-[source,bash]
-----
-oc login -u %OPENSHIFT_USERNAME% -p %OPENSHIFT_PASSWORD% %OPENSHIFT_API_URL%
-----
-
-**Problem**: "Permission denied" when creating resources
-
-**Solution**: Verify you're logged in as the correct user and have the necessary permissions:
-
-[source,bash]
-----
-oc whoami
-oc auth can-i create networkpolicies
-----
-
-=== During workshop support
-
-* Use the Web Terminal in the OpenShift console for all commands
-* Check the OpenShift web console for visual feedback
-* Ask your instructor if you encounter issues
-
-
-== Authors and contributors
-
-**Primary Author**: Red Hat Solution Architect Team
-
-**Last Updated**: February 2026
-
-**Workshop Version**: 1.0
-
-**Contact Information**:
-
-* Workshop feedback: https://github.com/mostmark/network-policies-workshop/issues[Submit issues via workshop repository^]
