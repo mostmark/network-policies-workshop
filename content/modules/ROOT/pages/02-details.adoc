@@ -83,7 +83,7 @@ Vrify your terminal by running these commands:
 oc whoami
 ----
 
-Expected output: Your username (e.g. `user1`)
+Expected output: Your username (`{OPENSHIFT_USERNAME}`)
 
 [source,bash,role=execute]
 ----
