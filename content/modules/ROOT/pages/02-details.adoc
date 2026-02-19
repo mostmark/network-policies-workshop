@@ -83,7 +83,7 @@ Vrify your terminal by running these commands:
 oc whoami
 ----
 
-Expected output: Your username (e.g., `admin` or `userX`)
+Expected output: Your username (e.g. `user1`)
 
 [source,bash,role=execute]
 ----
