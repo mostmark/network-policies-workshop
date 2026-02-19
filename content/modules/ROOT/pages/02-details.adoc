@@ -46,29 +46,11 @@ Your lab environment is already set up with:
 * Web Terminal with `oc` CLI automatically authenticated
 * Sample applications ready to deploy
 
-=== Verify your environment
-
-When you start the lab, verify your setup by running these commands in the Web Terminal:
-
-[source,bash,role=execute]
-----
-oc whoami
-----
-
-Expected output: Your username (e.g., `admin` or `userX`)
-
-[source,bash,role=execute]
-----
-oc version
-----
-
-Expected output: OpenShift client and server version information
-
 === Using the Web Terminal
 
 All CLI commands in this workshop are run in the OpenShift Web Terminal. The Web Terminal runs directly in your browser — no local `oc` CLI installation is required.
 
-. Open the OpenShift console by navigating to `{OPENSHIFT_CONSOLE_URL}`.
+. Open the OpenShift console by navigating to {OPENSHIFT_CONSOLE_URL}[{OPENSHIFT_CONSOLE_URL}, window="_blank"].
 
 . Click the command-line terminal icon (*>_*) in the upper-right corner of the console masthead.
 +
@@ -89,6 +71,24 @@ image::web-terminal-panel2.png[Web Terminal open in the OpenShift console]
 ====
 If the Web Terminal session times out or disconnects, click the terminal icon again to start a new session. Your credentials will be automatically restored.
 ====
+
+=== Verify your environment
+
+Vrify your terminal by running these commands:
+
+[source,bash,role=execute]
+----
+oc whoami
+----
+
+Expected output: Your username (e.g., `admin` or `userX`)
+
+[source,bash,role=execute]
+----
+oc version
+----
+
+Expected output: OpenShift client and server version information
 
 == Environment details
 
