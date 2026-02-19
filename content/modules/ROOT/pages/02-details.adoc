@@ -58,7 +58,7 @@ All CLI commands in this workshop are run in the OpenShift Web Terminal. The Web
 +
 image::web-terminal-icon.png[Web Terminal icon in the OpenShift console masthead]
 
-. Select your project from the *Project* dropdown if prompted.
+. Select the project `terminal-{OPENSHIFT_USERNAME}` from the *Project* dropdown if prompted.
 
 . Click *Start* to launch the terminal session.
 
