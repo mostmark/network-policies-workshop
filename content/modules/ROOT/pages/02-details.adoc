@@ -3,22 +3,6 @@
 :toc-placement: preamble
 :icons: font
 
-== Timing and schedule
-
-=== Full workshop (1 hour)
-
-* **Module 1**: Understanding network policy basics (20 minutes)
-* **Module 2**: Implementing ingress and egress policies (25 minutes)
-* **Module 3**: Cross-namespace policies and troubleshooting (15 minutes)
-
-== Environment details
-
-Participants have access to:
-
-* Red Hat OpenShift cluster (provided during workshop)
-* OpenShift web console
-* Web Terminal in the OpenShift console (no local installation needed)
-
 == Access information
 
 [cols="1,2"]

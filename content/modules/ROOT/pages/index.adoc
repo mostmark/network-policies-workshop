@@ -29,19 +29,13 @@ Before starting this workshop, you should have:
 
 You will work in a pre-configured OpenShift cluster with all necessary tools installed.
 
-You will have access to:
-
-* OpenShift cluster: {OPENSHIFT_CONSOLE_URL}
-* Username: {OPENSHIFT_USERNAME}
-* Password: {OPENSHIFT_PASSWORD}
-
-NOTE: All environment details and credentials are available in the lab interface.
-
 == Estimated time
 
 This workshop will take approximately **1 hour** to complete.
 
-You can work at your own pace.
+* **Module 1**: Understanding network policy basics (20 minutes)
+* **Module 2**: Implementing ingress and egress policies (25 minutes)
+* **Module 3**: Cross-namespace policies and troubleshooting (15 minutes)
 
 == Let's get started!
 
