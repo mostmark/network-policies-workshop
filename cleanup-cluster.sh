@@ -51,6 +51,10 @@ for i in $(seq 1 "$NUM_USERS"); do
   echo
 done
 
+# Delete the user distribution application
+echo "=== Removing the user-distribution project ==="
+oc delete project user-distribution --ignore-not-found
+
 # Uninstall the Web Terminal operator
 echo "=== Uninstalling OpenShift Web Terminal Operator ==="
 
@@ -69,6 +73,9 @@ fi
 # Remove the DevWorkspace custom resources used by the Operator, along with any related Kubernetes objects
 oc delete devworkspaces.workspace.devfile.io --all-namespaces --all --wait
 oc delete devworkspaceroutings.controller.devfile.io --all-namespaces --all --wait
+
+oc delete subscription devworkspace-operator-fast-redhat-operators-openshift-marketplace -n openshift-operators
+oc delete csv devworkspace-operator.v0.39.0 -n openshift-operators
 
 # Remove the CRDs used by the Operator
 oc delete customresourcedefinitions.apiextensions.k8s.io devworkspaceroutings.controller.devfile.io

@@ -90,40 +90,48 @@ for i in $(seq 1 "$NUM_USERS"); do
   oc adm policy add-role-to-user admin "$USER" -n "$PROJECT_FRONTEND"
   oc adm policy add-role-to-user admin "$USER" -n "$PROJECT_TERMINAL"
 
-  # Pre-create and start the Web Terminal DevWorkspace
-  oc apply -f - <<EOF
-kind: DevWorkspace
-apiVersion: workspace.devfile.io/v1alpha2
-metadata:
-  name: terminal-web
-  namespace: ${PROJECT_TERMINAL}
-  finalizers:
-    - rbac.controller.devfile.io
-  annotations:
-    controller.devfile.io/devworkspace-source: web-terminal
-    controller.devfile.io/restricted-access: "true"
-  labels:
-    console.openshift.io/terminal: "true"
-spec:
-  started: true
-  routingClass: web-terminal
-  template:
-    components:
-    - name: web-terminal-exec
-      plugin:
-        kubernetes:
-          name: web-terminal-exec
-          namespace: openshift-operators
-    - name: web-terminal-tooling
-      plugin:
-        kubernetes:
-          name: web-terminal-tooling
-          namespace: openshift-operators
-EOF
+# Pre-create and start the Web Terminal DevWorkspace
+#  oc apply -f - <<EOF
+# kind: DevWorkspace
+# apiVersion: workspace.devfile.io/v1alpha2
+# metadata:
+#   name: terminal-web
+#   namespace: ${PROJECT_TERMINAL}
+#   finalizers:
+#     - rbac.controller.devfile.io
+#   annotations:
+#     controller.devfile.io/devworkspace-source: web-terminal
+#     controller.devfile.io/restricted-access: "true"
+#   labels:
+#     console.openshift.io/terminal: "true"
+# spec:
+#   started: true
+#   routingClass: web-terminal
+#   template:
+#     components:
+#     - name: web-terminal-exec
+#       plugin:
+#         kubernetes:
+#           name: web-terminal-exec
+#           namespace: openshift-operators
+#     - name: web-terminal-tooling
+#       plugin:
+#         kubernetes:
+#           name: web-terminal-tooling
+#           namespace: openshift-operators
+# EOF
 
   echo "Done with $USER"
   echo
 done
+
+# Deployment of the user distribution application
+echo
+echo "Deploying the user distribution application)..."
+echo
+
+oc new-project user-distribution --display-name="User distribution application"
+oc apply -k username-distribution-app/overlays/dev
 
 echo "============================================"
 echo "Cluster preparation complete!"
