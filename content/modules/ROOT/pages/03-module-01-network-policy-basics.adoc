@@ -29,11 +29,11 @@ You prepare to create test deployments and verify the default open communication
 
 . Ensure the Web Terminal is open in the OpenShift console. If you haven't opened it yet, follow the instructions in xref:02-details.adoc#_using_the_web_terminal[Using the Web Terminal]. The Web Terminal is automatically logged in with your credentials.
 
-. Create a new project for testing network policies:
+. Switch to the pre-created project for testing network policies:
 +
 [source,bash,role=execute]
 ----
-oc new-project network-policy-test-%OPENSHIFT_USERNAME%
+oc project network-policy-test-%OPENSHIFT_USERNAME%
 ----
 +
 Expected output:
