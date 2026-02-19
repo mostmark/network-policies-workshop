@@ -1,0 +1,10 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: get-a-username
+spec:
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: get-a-username
