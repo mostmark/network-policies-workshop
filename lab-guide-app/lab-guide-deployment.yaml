@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab-guide
+  namespace: lab-guide
+  labels:
+    app: lab-guide
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lab-guide
+  template:
+    metadata:
+      labels:
+        app: lab-guide
+    spec:
+      containers:
+      - name: lab-guide
+        image: "quay.io/mostmark/network-policies-lab:latest"
+        ports:
+        - containerPort: 8080

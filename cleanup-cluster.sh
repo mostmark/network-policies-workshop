@@ -55,6 +55,10 @@ done
 echo "=== Removing the user-distribution project ==="
 oc delete project user-distribution --ignore-not-found
 
+# Delete the lab guide application
+echo "=== Removing the lab-guide project ==="
+oc delete project lab-guide --ignore-not-found
+
 # Uninstall the Web Terminal operator
 echo "=== Uninstalling OpenShift Web Terminal Operator ==="
 

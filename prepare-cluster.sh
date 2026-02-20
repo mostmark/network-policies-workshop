@@ -49,7 +49,7 @@ EOF
     if [ "$attempt" -eq 30 ]; then
       echo "Warning: Timed out waiting for Web Terminal operator. It may still be installing."
     fi
-    sleep 15
+    sleep 40
   done
 fi
 echo
@@ -127,11 +127,19 @@ done
 
 # Deployment of the user distribution application
 echo
-echo "Deploying the user distribution application)..."
+echo "Deploying the user distribution application..."
 echo
 
 oc new-project user-distribution --display-name="User distribution application"
 oc apply -k username-distribution-app/overlays/dev
+
+# Deployment of the lab guide
+echo
+echo "Deploying the lab guide application..."
+echo
+
+oc new-project lab-guide --display-name="Lab guide application"
+oc create -f lab-guide-app/
 
 echo "============================================"
 echo "Cluster preparation complete!"
