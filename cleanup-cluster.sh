@@ -74,7 +74,15 @@ fi
 oc delete devworkspaces.workspace.devfile.io --all-namespaces --all --wait
 oc delete devworkspaceroutings.controller.devfile.io --all-namespaces --all --wait
 
-oc delete subscription devworkspace-operator-fast-redhat-operators-openshift-marketplace -n openshift-operators
+# Delete the subscription for the DevWorkspace operator
+SUBSCRIPTION=$(oc get subscription -n openshift-operators -o name 2>/dev/null | grep devworkspace || true)
+if [ -n "$SUBSCRIPTION" ]; then
+  oc delete "$SUBSCRIPTION" -n openshift-operators
+  echo "DevWorkspace operator subscription removed."
+else
+  echo "No DevWorkspace operator subscription found, skipping."
+fi
+
 
 # Delete the CSV for DevWorkspace (the installed operator)
 CSV=$(oc get csv -n openshift-operators -o name 2>/dev/null | grep devworkspace || true)
