@@ -49,7 +49,7 @@ EOF
     if [ "$attempt" -eq 30 ]; then
       echo "Warning: Timed out waiting for Web Terminal operator. It may still be installing."
     fi
-    sleep 10
+    sleep 15
   done
 fi
 echo

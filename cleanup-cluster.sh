@@ -61,7 +61,7 @@ echo "=== Uninstalling OpenShift Web Terminal Operator ==="
 # Delete the subscription
 oc delete subscription web-terminal -n openshift-operators --ignore-not-found
 
-# Delete the CSV (the installed operator)
+# Delete the CSV for Web Terminal (the installed operator)
 CSV=$(oc get csv -n openshift-operators -o name 2>/dev/null | grep web-terminal || true)
 if [ -n "$CSV" ]; then
   oc delete "$CSV" -n openshift-operators
@@ -75,7 +75,15 @@ oc delete devworkspaces.workspace.devfile.io --all-namespaces --all --wait
 oc delete devworkspaceroutings.controller.devfile.io --all-namespaces --all --wait
 
 oc delete subscription devworkspace-operator-fast-redhat-operators-openshift-marketplace -n openshift-operators
-oc delete csv devworkspace-operator.v0.39.0 -n openshift-operators
+
+# Delete the CSV for DevWorkspace (the installed operator)
+CSV=$(oc get csv -n openshift-operators -o name 2>/dev/null | grep devworkspace || true)
+if [ -n "$CSV" ]; then
+  oc delete "$CSV" -n openshift-operators
+  echo "DevWorkspace operator removed."
+else
+  echo "No DevWorkspace operator CSV found, skipping."
+fi
 
 # Remove the CRDs used by the Operator
 oc delete customresourcedefinitions.apiextensions.k8s.io devworkspaceroutings.controller.devfile.io
