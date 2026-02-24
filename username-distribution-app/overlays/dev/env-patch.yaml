@@ -11,7 +11,7 @@ spec:
             - name: LAB_EXTRA_URLS
               value: 'https://console-openshift-console.apps.dev.mycluster.com;OpenShift Console'
             - name: LAB_MODULE_URLS
-              value: 'https://mostmark.github.io/network-policies-workshop?OPENSHIFT_USERNAME=user1&OPENSHIFT_PASSWORD=mypassword&OPENSHIFT_CONSOLE_URL=https://console-openshift-console.apps.lab.mycluster.com&OPENSHIFT_API_URL=https://api.lab.mycluster.com:6443;Network Policies Introduction'
+              value: 'https://mostmark.github.io/network-policies-workshop?OPENSHIFT_USERNAME=%USERNAME%&OPENSHIFT_PASSWORD=mypassword&OPENSHIFT_CONSOLE_URL=https://console-openshift-console.apps.lab.mycluster.com&OPENSHIFT_API_URL=https://api.lab.mycluster.com:6443;Network Policies Introduction'
             - name: LAB_USER_COUNT
               value: "3"
             - name: LAB_TITLE
