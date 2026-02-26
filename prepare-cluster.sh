@@ -49,7 +49,7 @@ EOF
     if [ "$attempt" -eq 30 ]; then
       echo "Warning: Timed out waiting for Web Terminal operator. It may still be installing."
     fi
-    sleep 40
+    sleep 60
   done
 fi
 echo
@@ -60,6 +60,35 @@ read -rp "Enter the number of users to prepare: " NUM_USERS
 if ! [[ "$NUM_USERS" =~ ^[0-9]+$ ]] || [ "$NUM_USERS" -lt 1 ]; then
   echo "Error: Please enter a positive integer."
   exit 1
+fi
+
+# Promt for subdomain and user password
+read -rp "Enter subdomain: " SUBDOMAIN
+read -rp "Enter OpenShift user password: " PASSWORD
+
+# Update the url and numbers of users in the manifests for 
+# the username-distribution application
+FILE="./username-distribution-app/overlays/dev/env-patch.yaml"
+
+# Check if file exists
+if [[ ! -f "$FILE" ]]; then
+  echo "Error: File not found: $FILE"
+  exit 1
+fi
+
+# Perform in-place substitutions using sed (cross-platform)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  sed -i '' \
+    -e "s|%SUBDOMAIN%|$SUBDOMAIN|g" \
+    -e "s|%NUM_USERS%|$NUM_USERS|g" \
+    -e "s|%PASSWORD%|$PASSWORD|g" \
+    "$FILE"
+else
+  sed -i \
+    -e "s|%SUBDOMAIN%|$SUBDOMAIN|g" \
+    -e "s|%NUM_USERS%|$NUM_USERS|g" \
+    -e "s|%PASSWORD%|$PASSWORD|g" \
+    "$FILE"
 fi
 
 echo
