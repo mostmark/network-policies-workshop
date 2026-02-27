@@ -11,7 +11,7 @@ spec:
             - name: LAB_EXTRA_URLS
               value: 'https://console-openshift-console.apps.%SUBDOMAIN%;OpenShift Console'
             - name: LAB_MODULE_URLS
-              value: 'https://doc-lab-guide.apps.%SUBDOMAIN%?OPENSHIFT_USERNAME=%USERNAME%&OPENSHIFT_PASSWORD=%PASSWORD%&OPENSHIFT_CONSOLE_URL=https://console-openshift-console.apps.%SUBDOMAIN%&OPENSHIFT_API_URL=https://api.%SUBDOMAIN%:6443;Network Policies Introduction'
+              value: 'https://doc-lab-guide.apps.%SUBDOMAIN%?OPENSHIFT_USERNAME=%USERNAME%&OPENSHIFT_PASSWORD=%PASSWORD%&OPENSHIFT_CONSOLE_URL=console-openshift-console.apps.%SUBDOMAIN%&OPENSHIFT_API_URL=api.%SUBDOMAIN%:6443;Network Policies Introduction'
             - name: LAB_USER_COUNT
               value: "%NUM_USERS%"
             - name: LAB_TITLE
