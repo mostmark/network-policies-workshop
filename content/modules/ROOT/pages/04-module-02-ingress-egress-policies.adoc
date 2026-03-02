@@ -202,7 +202,7 @@ Important considerations for egress:
 +
 [source,bash,role=execute]
 ----
-oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com/en
+oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}\n" https://www.redhat.com/en
 ----
 +
 Expected output:
@@ -241,7 +241,7 @@ networkpolicy.networking.k8s.io/deny-all-egress-test created
 +
 [source,bash,role=execute]
 ----
-oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com/en
+oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}\n" https://www.redhat.com/en
 ----
 +
 The command should time out. All outbound traffic from the test pod is now blocked, including DNS resolution.
@@ -317,7 +317,7 @@ Expected output:
 +
 [source,bash,role=execute]
 ----
-oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com/en
+oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}\n" https://www.redhat.com/en
 ----
 +
 This should time out. The test pod can reach the hello pod but cannot reach external services.
@@ -350,7 +350,7 @@ echo "=== Test 1: test -> hello (should succeed) ==="
 oc exec deploy/test -- curl -s --connect-timeout 5 hello:8080 | grep Hello
 
 echo "=== Test 2: test -> external (should fail) ==="
-oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://www.redhat.com || echo "Blocked as expected"
+oc exec deploy/test -- curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}\n" https://www.redhat.com || echo "Blocked as expected"
 
 echo "=== Test 3: hello -> test (should fail) ==="
 oc exec deploy/hello -- curl -s --connect-timeout 5 test:8080 || echo "Blocked as expected"
