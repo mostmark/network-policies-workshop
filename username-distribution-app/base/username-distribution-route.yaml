@@ -4,6 +4,9 @@ metadata:
   name: get-a-username
   namespace: user-distribution
 spec:
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
   port:
     targetPort: 8080-tcp
   to:

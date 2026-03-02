@@ -170,8 +170,11 @@ echo
 oc new-project lab-guide --display-name="Lab guide application"
 oc create -f lab-guide-app/
 
+USER_DISTRIBUTION_URL=https://$(oc get route get-a-username -n user-distribution -o jsonpath='{.spec.host}')
+
 echo "============================================"
 echo "Cluster preparation complete!"
 echo "Created projects for $NUM_USERS user(s)."
 echo "Each user has admin access to their 4 projects."
+echo "User distribution app url: $USER_DISTRIBUTION_URL"
 echo "============================================"
