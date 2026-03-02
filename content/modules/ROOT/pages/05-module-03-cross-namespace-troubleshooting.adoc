@@ -360,13 +360,6 @@ oc describe networkpolicies -n backend-team-%OPENSHIFT_USERNAME%
 oc get pods -n frontend-team-%OPENSHIFT_USERNAME% --show-labels
 ----
 
-. **Check namespace labels**:
-+
-[source,bash,role=execute]
-----
-oc get namespaces --show-labels
-----
-
 . **View policy YAML for detailed inspection**:
 +
 [source,bash,role=execute]
