@@ -16,13 +16,11 @@ fi
 
 echo "Logged in as: $(oc whoami)"
 echo "Server: $(oc whoami --show-server)"
-echo
 
-# Prompt for number of users
-read -rp "Enter the number of users to clean up: " NUM_USERS
+NUM_USERS=$(oc get ns --no-headers -o custom-columns=NAME:.metadata.name | awk '/^network-policy-test-user/ {c++} END {print c+0}')
 
 if ! [[ "$NUM_USERS" =~ ^[0-9]+$ ]] || [ "$NUM_USERS" -lt 1 ]; then
-  echo "Error: Please enter a positive integer."
+  echo "Error: No user projects found. Is the lab installed?"
   exit 1
 fi
 
@@ -87,7 +85,6 @@ else
   echo "No DevWorkspace operator subscription found, skipping."
 fi
 
-
 # Delete the CSV for DevWorkspace (the installed operator)
 CSV=$(oc get csv -n openshift-operators -o name 2>/dev/null | grep devworkspace || true)
 if [ -n "$CSV" ]; then
@@ -113,7 +110,6 @@ oc delete all --selector app.kubernetes.io/part-of=devworkspace-operator,app.kub
 oc delete serviceaccounts devworkspace-webhook-server -n openshift-operators
 oc delete clusterrole devworkspace-webhook-server
 oc delete clusterrolebinding devworkspace-webhook-server
-
 
 echo
 echo "============================================"
