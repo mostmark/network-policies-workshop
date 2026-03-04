@@ -18,6 +18,19 @@ echo "Logged in as: $(oc whoami)"
 echo "Server: $(oc whoami --show-server)"
 echo
 
+# Prompt the user for information
+
+# Prompt for number of users
+read -rp "Enter the number of users to prepare: " NUM_USERS
+
+if ! [[ "$NUM_USERS" =~ ^[0-9]+$ ]] || [ "$NUM_USERS" -lt 1 ]; then
+  echo "Error: Please enter a positive integer."
+  exit 1
+fi
+
+# Promt for openshift user password
+read -rp "Enter OpenShift user password: " PASSWORD
+
 # Install the Web Terminal operator
 echo "=== Installing OpenShift Web Terminal Operator ==="
 if oc get subscription web-terminal -n openshift-operators &>/dev/null; then
@@ -54,17 +67,10 @@ EOF
 fi
 echo
 
-# Prompt for number of users
-read -rp "Enter the number of users to prepare: " NUM_USERS
-
-if ! [[ "$NUM_USERS" =~ ^[0-9]+$ ]] || [ "$NUM_USERS" -lt 1 ]; then
-  echo "Error: Please enter a positive integer."
-  exit 1
-fi
-
-# Promt for subdomain and user password
-read -rp "Enter subdomain: " SUBDOMAIN
-read -rp "Enter OpenShift user password: " PASSWORD
+# Get the cluster domain
+BASE_DOMAIN=$(oc get ingresses.config.openshift.io cluster -o jsonpath='{.spec.domain}')
+# Remove the .apps part
+CLUSTER_DOMAIN=${BASE_DOMAIN#apps.}
 
 # Update the url and numbers of users in the manifests for 
 # the username-distribution application
@@ -79,13 +85,13 @@ fi
 # Perform in-place substitutions using sed (cross-platform)
 if [[ "$OSTYPE" == "darwin"* ]]; then
   sed -i '' \
-    -e "s|%SUBDOMAIN%|$SUBDOMAIN|g" \
+    -e "s|%CLUSTER_DOMAIN%|$CLUSTER_DOMAIN|g" \
     -e "s|%NUM_USERS%|$NUM_USERS|g" \
     -e "s|%PASSWORD%|$PASSWORD|g" \
     "$FILE"
 else
   sed -i \
-    -e "s|%SUBDOMAIN%|$SUBDOMAIN|g" \
+    -e "s|%CLUSTER_DOMAIN%|$CLUSTER_DOMAIN|g" \
     -e "s|%NUM_USERS%|$NUM_USERS|g" \
     -e "s|%PASSWORD%|$PASSWORD|g" \
     "$FILE"
