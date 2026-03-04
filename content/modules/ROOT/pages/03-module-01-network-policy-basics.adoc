@@ -177,7 +177,7 @@ spec:
 
 image::console-networkpolicy-yaml.png[NetworkPolicy YAML view]
 
-All subsequent policies in this workshop will use the CLI and YAML for efficiency, but you can always use the console to inspect or edit policies visually.
+You can always switch between the console and CLI approaches depending on your preference. The console's Form view is especially useful for visualizing policy structure, while the CLI is faster for applying policies from YAML files.
 ====
 
 === Verify the policy via CLI
@@ -242,9 +242,11 @@ Network policies use labels to select:
 * **Source pods**: Which pods are allowed to send traffic (`spec.ingress[].from[].podSelector`)
 * **Source namespaces**: Which namespaces are allowed (`spec.ingress[].from[].namespaceSelector`)
 
-=== Create the allow-specific policy
+=== Create the allow-specific policy using the OpenShift console
 
-. First, check the labels on your pods:
+Just like you created the deny-all policy, you'll use the OpenShift console's *Form view* to create this selective allow policy. The console provides helpful features that let you preview which pods are affected by each part of the policy.
+
+. First, check the labels on your pods so you know which labels to use in the policy:
 +
 [source,bash,role=execute]
 ----
@@ -253,37 +255,56 @@ oc get pods --show-labels
 +
 Note the `deployment=hello` and `deployment=test` labels.
 
-. Create a network policy that allows traffic from the test pod to the hello pod on port 8080:
-+
-[source,bash,role=execute]
-----
-cat << 'EOF' | oc apply -f -
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: allow-test-to-hello
-spec:
-  podSelector:
-    matchLabels:
-      deployment: hello
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          deployment: test
-    ports:
-    - port: 8080
-      protocol: TCP
-EOF
-----
-+
-Expected output:
-+
-----
-networkpolicy.networking.k8s.io/allow-test-to-hello created
-----
+. In the OpenShift console, navigate to *Networking* > *NetworkPolicies*.
 
-. Verify both network policies exist:
+. Make sure the *network-policy-test-{OPENSHIFT_USERNAME}* project is selected, then click *Create NetworkPolicy*.
+
+. In the *Form view*, set the *Policy name* to `allow-test-to-hello`.
+
+. Under *Pod selector*, add a label to select the target pods:
++
+--
+* *Key*: `deployment`
+* *Value*: `hello`
+--
++
+[TIP]
+====
+Click the *Show a preview of the affected pods that this policy will apply to* link. This opens a panel showing which pods match the selector — you should see only the `hello` pod listed. This is a great way to verify your policy targets the correct pods before creating it.
+====
+
+. Leave the *Policy type* checkboxes (*Deny all ingress traffic* and *Deny all egress traffic*) unchecked.
+
+. Under *Ingress*, click *Add ingress rule* to add a new ingress rule.
+
+. In the new *Ingress rule*, click the *Add allowed source* dropdown and select *Allow pods from the same namespace*.
+
+. Under the *Pod selector* for this ingress rule, add a label to select the source pods:
++
+--
+* *Key*: `deployment`
+* *Value*: `test`
+--
++
+[TIP]
+====
+Click the *Show a preview of the affected pods that this ingress rule will apply to* link. This shows you which pods will be allowed to send traffic — you should see only the `test` pod. Use this feature to confirm that your ingress rule matches the intended source pods.
+====
+
+. Under *Ports*, click *Add port* and configure:
++
+--
+* *Protocol*: `TCP`
+* *Port*: `8080`
+--
+
+. Review your configuration. It should match the following screenshot:
++
+image::console-allow-test-to-hello-form.png[OpenShift console form view showing the allow-test-to-hello network policy configuration,link=self,window=blank,title="Create allow-test-to-hello Network Policy"]
+
+. Click *Create*.
+
+. Verify both network policies exist using the CLI:
 +
 [source,bash,role=execute]
 ----
