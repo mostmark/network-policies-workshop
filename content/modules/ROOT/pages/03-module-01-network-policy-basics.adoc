@@ -74,7 +74,7 @@ Wait until both pods show `1/1 Running` status, then press `Ctrl+C` to exit the 
 oc get pods -o wide
 ----
 +
-Note the IP addresses in the output. You'll need the IP address of the `hello` pod.
+Note the IP addresses in the output.
 
 . Test communication from the `test` pod to the `hello` pod using curl:
 +
