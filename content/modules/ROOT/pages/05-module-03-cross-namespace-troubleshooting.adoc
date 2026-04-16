@@ -34,7 +34,7 @@ oc project backend-team-%OPENSHIFT_USERNAME%
 +
 [source,bash,role=execute]
 ----
-oc new-app --name backend-api --image quay.io/redhattraining/hello-world-nginx:v1.0
+oc new-app --name backend-api --image quay.io/redhattraining/hello-world-nginx:v1.0 -n backend-team-%OPENSHIFT_USERNAME%
 ----
 
 . Wait for the backend pod to be ready:
