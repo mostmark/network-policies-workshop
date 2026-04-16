@@ -75,7 +75,7 @@ oc project frontend-team-%OPENSHIFT_USERNAME%
 +
 [source,bash,role=execute]
 ----
-oc new-app --name frontend-app --image quay.io/redhattraining/hello-world-nginx:v1.0
+oc new-app --name frontend-app --image quay.io/redhattraining/hello-world-nginx:v1.0 -n frontend-team-%OPENSHIFT_USERNAME%
 ----
 
 . Wait for the frontend pod to be ready:
