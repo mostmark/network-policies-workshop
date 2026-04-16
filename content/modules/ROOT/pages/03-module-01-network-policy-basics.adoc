@@ -163,16 +163,19 @@ image::deny-all-policy-applied.png[OpenShift console showing network policy,link
 ====
 You can switch between the *Form view* and *YAML view* at any time when creating or editing a network policy. The YAML equivalent of the deny-all policy you just created looks like this:
 
+NOTE: For easier reading some meta data fields has been removed in this example (e.g uid, resourceVersion, etc)
+
 [source,yaml]
 ----
-apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
 metadata:
   name: deny-all
   namespace: network-policy-test-%OPENSHIFT_USERNAME%
 spec:
   podSelector: {}
-  policyTypes: []
+  policyTypes:
+    - Ingress
 ----
 
 image::console-networkpolicy-yaml.png[NetworkPolicy YAML view]
