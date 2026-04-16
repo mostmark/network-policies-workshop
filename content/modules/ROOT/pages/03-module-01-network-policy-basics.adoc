@@ -46,14 +46,14 @@ Now using project "network-policy-test-%OPENSHIFT_USERNAME%" on server "..."
 +
 [source,bash,role=execute]
 ----
-oc new-app --name hello --image quay.io/redhattraining/hello-world-nginx:v1.0
+oc new-app --name hello --image quay.io/redhattraining/hello-world-nginx:v1.0 -n network-policy-test-%OPENSHIFT_USERNAME%
 ----
 
 . Create a "test" deployment:
 +
 [source,bash,role=execute]
 ----
-oc new-app --name test --image quay.io/redhattraining/hello-world-nginx:v1.0
+oc new-app --name test --image quay.io/redhattraining/hello-world-nginx:v1.0 -n network-policy-test-%OPENSHIFT_USERNAME%
 ----
 
 . Wait for both deployments to be ready:
