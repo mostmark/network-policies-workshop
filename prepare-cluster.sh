@@ -29,7 +29,7 @@ if ! [[ "$NUM_USERS" =~ ^[0-9]+$ ]] || [ "$NUM_USERS" -lt 1 ]; then
 fi
 
 # Promt for openshift user password
-read -rp "Enter OpenShift user password: " PASSWORD
+# read -rp "Enter OpenShift user password: " PASSWORD
 
 # Install the Web Terminal operator
 echo "=== Installing OpenShift Web Terminal Operator ==="
@@ -68,34 +68,34 @@ fi
 echo
 
 # Get the cluster domain
-BASE_DOMAIN=$(oc get ingresses.config.openshift.io cluster -o jsonpath='{.spec.domain}')
+#BASE_DOMAIN=$(oc get ingresses.config.openshift.io cluster -o jsonpath='{.spec.domain}')
 # Remove the .apps part
-CLUSTER_DOMAIN=${BASE_DOMAIN#apps.}
+#CLUSTER_DOMAIN=${BASE_DOMAIN#apps.}
 
 # Update the url and numbers of users in the manifests for 
 # the username-distribution application
-FILE="./username-distribution-app/overlays/dev/env-patch.yaml"
+#FILE="./username-distribution-app/overlays/dev/env-patch.yaml"
 
 # Check if file exists
-if [[ ! -f "$FILE" ]]; then
-  echo "Error: File not found: $FILE"
-  exit 1
-fi
+#if [[ ! -f "$FILE" ]]; then
+#  echo "Error: File not found: $FILE"
+#  exit 1
+#fi
 
 # Perform in-place substitutions using sed (cross-platform)
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  sed -i '' \
-    -e "s|%CLUSTER_DOMAIN%|$CLUSTER_DOMAIN|g" \
-    -e "s|%NUM_USERS%|$NUM_USERS|g" \
-    -e "s|%PASSWORD%|$PASSWORD|g" \
-    "$FILE"
-else
-  sed -i \
-    -e "s|%CLUSTER_DOMAIN%|$CLUSTER_DOMAIN|g" \
-    -e "s|%NUM_USERS%|$NUM_USERS|g" \
-    -e "s|%PASSWORD%|$PASSWORD|g" \
-    "$FILE"
-fi
+#if [[ "$OSTYPE" == "darwin"* ]]; then
+#  sed -i '' \
+#    -e "s|%CLUSTER_DOMAIN%|$CLUSTER_DOMAIN|g" \
+#    -e "s|%NUM_USERS%|$NUM_USERS|g" \
+#    -e "s|%PASSWORD%|$PASSWORD|g" \
+#    "$FILE"
+#else
+#  sed -i \
+#    -e "s|%CLUSTER_DOMAIN%|$CLUSTER_DOMAIN|g" \
+#    -e "s|%NUM_USERS%|$NUM_USERS|g" \
+#    -e "s|%PASSWORD%|$PASSWORD|g" \
+#    "$FILE"
+#fi
 
 echo
 echo "Preparing cluster for $NUM_USERS user(s)..."
@@ -161,12 +161,12 @@ for i in $(seq 1 "$NUM_USERS"); do
 done
 
 # Deployment of the user distribution application
-echo
-echo "Deploying the user distribution application..."
-echo
+# echo
+# echo "Deploying the user distribution application..."
+# echo
 
-oc new-project user-distribution --display-name="User distribution application"
-oc apply -k username-distribution-app/overlays/dev
+# oc new-project user-distribution --display-name="User distribution application"
+# oc apply -k username-distribution-app/overlays/dev
 
 # Deployment of the lab guide
 echo
@@ -176,11 +176,11 @@ echo
 oc new-project lab-guide --display-name="Lab guide application"
 oc create -f lab-guide-app/
 
-USER_DISTRIBUTION_URL=https://$(oc get route get-a-username -n user-distribution -o jsonpath='{.spec.host}')
+# USER_DISTRIBUTION_URL=https://$(oc get route get-a-username -n user-distribution -o jsonpath='{.spec.host}')
 
 echo "============================================"
 echo "Cluster preparation complete!"
 echo "Created projects for $NUM_USERS user(s)."
 echo "Each user has admin access to their 4 projects."
-echo "User distribution app url: $USER_DISTRIBUTION_URL"
+#echo "User distribution app url: $USER_DISTRIBUTION_URL"
 echo "============================================"
