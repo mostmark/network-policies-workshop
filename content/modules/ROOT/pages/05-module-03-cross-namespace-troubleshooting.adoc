@@ -1,4 +1,4 @@
-= Module 3: Cross-namespace policies and troubleshooting
+= Module 3: Cross-namespace policies
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1
@@ -13,8 +13,6 @@ By the end of this module, you'll be able to:
 
 * Create network policies that allow traffic between specific namespaces
 * Use namespace labels to build scalable cross-namespace rules
-* Apply a systematic troubleshooting methodology for network policy issues
-* Use diagnostic commands to identify which policies are blocking traffic
 
 [#exercise-1-implement-cross-namespace-policies]
 == Exercise 1: Implement cross-namespace policies
@@ -216,187 +214,6 @@ image::cross-namespace-policy.png[Cross-namespace network policy allowing fronte
 
 You've implemented ACME's multi-team network isolation requirement.
 
-[#exercise-2-troubleshoot-network-policy-issues]
-== Exercise 2: Troubleshoot network policy issues
-
-ACME's teams will inevitably encounter connectivity issues as network policies are rolled out. You need a repeatable troubleshooting methodology that any team member can follow.
-
-=== The troubleshooting methodology
-
-When a pod cannot connect to a destination, follow these steps in order:
-
-. **Identify the source and destination pods** and their labels
-. **List all network policies** that affect the source (egress) and destination (ingress)
-. **Check pod selectors** to confirm which policies apply to which pods
-. **Verify namespace labels** for cross-namespace rules
-. **Test connectivity** incrementally after each change
-
-=== Scenario: Diagnose a blocked connection
-
-A developer reports that a new `reporting` pod in the frontend namespace cannot reach the backend API. Walk through the troubleshooting steps.
-
-. Create the reporting deployment in the frontend namespace:
-+
-[source,bash,role=execute]
-----
-oc run reporting --image quay.io/redhattraining/hello-world-nginx:v1.0 -n frontend-team-%OPENSHIFT_USERNAME%
-----
-
-. Wait for the pod to be ready:
-+
-[source,bash,role=execute]
-----
-oc wait pod/reporting -n frontend-team-%OPENSHIFT_USERNAME% --for=condition=Ready --timeout=60s
-----
-
-. Confirm the connection fails:
-+
-[source,bash,role=execute]
-----
-BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.spec.clusterIP}')
-oc exec reporting -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080
-----
-+
-This times out. But the frontend namespace is allowed to reach the backend, so why is it blocked?
-
-=== Step 1: Identify pod labels
-
-. Check the labels on the reporting pod:
-+
-[source,bash,role=execute]
-----
-oc get pod reporting -n frontend-team-%OPENSHIFT_USERNAME% --show-labels
-----
-+
-Notice the label: `run=reporting`. Compare this with the frontend-app pod:
-+
-[source,bash,role=execute]
-----
-oc get pods -n frontend-team-%OPENSHIFT_USERNAME% --show-labels
-----
-+
-The `frontend-app` pod has `deployment=frontend-app`, while the `reporting` pod has `run=reporting`.
-
-=== Step 2: Check the network policies
-
-. Examine the allow-from-frontend policy in the backend namespace:
-+
-[source,bash,role=execute]
-----
-oc describe networkpolicy allow-from-frontend -n backend-team-%OPENSHIFT_USERNAME%
-----
-+
-The policy allows traffic from pods in namespaces labeled `team=frontend`. It does not filter on specific pod labels within that namespace, so the namespace label should be sufficient.
-
-. Check the ingress policies more carefully. The `allow-from-frontend` policy uses a `namespaceSelector` without a `podSelector` under the `from` block, which means all pods in the frontend-team-{OPENSHIFT_USERNAME} namespace should be allowed.
-
-=== Step 3: Check for egress restrictions
-
-. Check if there are any network policies in the frontend-team-{OPENSHIFT_USERNAME} namespace:
-+
-[source,bash,role=execute]
-----
-oc get networkpolicies -n frontend-team-%OPENSHIFT_USERNAME%
-----
-+
-If no egress policies exist in the frontend namespace, the issue is elsewhere. If the output shows `No resources found`, egress is unrestricted.
-
-. The `allow-from-frontend` policy uses a `namespaceSelector`, so let's verify the namespace label:
-+
-[source,bash,role=execute]
-----
-oc get namespace frontend-team-%OPENSHIFT_USERNAME% --show-labels | grep team
-----
-+
-Expected: The namespace should have the `team=frontend` label.
-
-=== Step 4: Narrow down the issue
-
-Since the namespace label is correct and the policy allows all pods from the frontend namespace, try a direct pod IP test to rule out DNS issues:
-
-[source,bash,role=execute]
-----
-BACKEND_POD_IP=$(oc get pod -l deployment=backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.items[0].status.podIP}')
-echo "Backend pod IP: $BACKEND_POD_IP"
-oc exec reporting -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_POD_IP:8080 | grep Hello
-----
-
-If this succeeds, the issue was DNS-related. If it still fails, there may be an additional policy or the namespace label is missing.
-
-=== Step 5: Apply the fix
-
-If the reporting pod was blocked, it could be due to a missing namespace label or a more restrictive policy. In our case, verify the policies are correct and the connection should work:
-
-[source,bash,role=execute]
-----
-BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.spec.clusterIP}')
-oc exec reporting -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 | grep Hello
-----
-
-If connectivity still fails, the troubleshooting methodology reveals the exact point of failure, which you can then address with a targeted policy change.
-
-=== Useful diagnostic commands
-
-Here is a reference of commands for troubleshooting network policies:
-
-. **List all policies affecting a namespace**:
-+
-[source,bash,role=execute]
-----
-oc get networkpolicies -n backend-team-%OPENSHIFT_USERNAME% -o wide
-----
-
-. **View policy details with selectors**:
-+
-[source,bash,role=execute]
-----
-oc describe networkpolicies -n backend-team-%OPENSHIFT_USERNAME%
-----
-
-. **Check pod labels**:
-+
-[source,bash,role=execute]
-----
-oc get pods -n frontend-team-%OPENSHIFT_USERNAME% --show-labels
-----
-
-. **View policy YAML for detailed inspection**:
-+
-[source,bash,role=execute]
-----
-oc get networkpolicy allow-from-frontend -n backend-team-%OPENSHIFT_USERNAME% -o yaml
-----
-
-=== Verify
-
-Run a comprehensive check across all namespaces to confirm the expected connectivity:
-
-[source,bash,role=execute]
-----
-BACKEND_SVC_IP=$(oc get svc backend-api -n backend-team-%OPENSHIFT_USERNAME% -o jsonpath='{.spec.clusterIP}')
-
-echo "=== frontend-app -> backend-api (should succeed) ==="
-oc exec deploy/frontend-app -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 | grep Hello
-
-echo "=== reporting -> backend-api (should succeed) ==="
-oc exec reporting -n frontend-team-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 | grep Hello
-
-echo "=== test (network-policy-test-%OPENSHIFT_USERNAME%) -> backend-api (should fail) ==="
-oc exec deploy/test -n network-policy-test-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 $BACKEND_SVC_IP:8080 || echo "Blocked as expected"
-
-echo "=== test -> hello (network-policy-test-%OPENSHIFT_USERNAME%, should succeed) ==="
-oc exec deploy/test -n network-policy-test-%OPENSHIFT_USERNAME% -- curl -s --connect-timeout 5 hello.network-policy-test-%OPENSHIFT_USERNAME%:8080 | grep Hello
-----
-
-Verification checklist:
-
-* All pods in the frontend-team-{OPENSHIFT_USERNAME} namespace can reach backend-api
-* Pods in other namespaces remain blocked from backend-api
-* Module 1 and Module 2 policies in network-policy-test-{OPENSHIFT_USERNAME} still function correctly
-* You can systematically identify which policy is blocking or allowing traffic
-
-image::troubleshooting-overview.png[Diagnostic output showing network policy troubleshooting,link=self,window=blank,width=700,title="Network Policy Troubleshooting"]
-
 == Troubleshooting
 
 **Issue**: Cross-namespace policy created but traffic still blocked
@@ -454,8 +271,6 @@ By completing this module, you should now understand:
 
 * How to use namespace labels and `namespaceSelector` to create cross-namespace network policies
 * That network policies are applied in the destination namespace for ingress and the source namespace for egress
-* A systematic troubleshooting methodology: identify pods, list policies, check selectors, verify labels, test incrementally
-* How to use `oc describe`, `--show-labels`, and other diagnostic commands to debug connectivity issues
 * That `namespaceSelector` and `podSelector` can be combined for fine-grained cross-namespace rules
 
 == Module summary
@@ -466,15 +281,7 @@ You've completed the final module and can now present a comprehensive network se
 
 * Implemented cross-namespace policies allowing frontend-to-backend communication
 * Used namespace labels for scalable, team-based access control
-* Established a troubleshooting methodology that any team member can follow
 * Validated connectivity across all three namespaces
-
-**Business impact realized:**
-
-* **Multi-team isolation**: Teams can share a cluster while maintaining network boundaries
-* **Scalable policy management**: Namespace labels make policies easy to manage as teams grow
-* **Reduced incident resolution time**: Structured troubleshooting methodology speeds up diagnosis
-* **Operational readiness**: ACME's teams have the tools and knowledge to manage network policies independently
 
 **Workshop complete:**
 

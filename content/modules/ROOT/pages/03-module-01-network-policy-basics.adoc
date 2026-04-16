@@ -14,7 +14,7 @@ In this module, you'll experience firsthand how network policies provide granula
 By the end of this module, you'll be able to:
 
 * Verify that pods can communicate freely by default in OpenShift
-* Create a deny-all network policy to block all traffic to pods
+* Create a `deny-all` network policy to block all traffic to pods
 * Create a selective allow policy to permit specific traffic
 * Test and validate that network policies are enforced correctly
 
