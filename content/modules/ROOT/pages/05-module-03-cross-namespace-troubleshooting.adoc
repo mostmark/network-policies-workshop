@@ -48,7 +48,7 @@ oc rollout status deployment/backend-api --timeout=60s
 +
 [source,bash,role=execute]
 ----
-cat << 'EOF' | oc apply -f -
+cat << 'EOF' | oc apply -n backend-team-%OPENSHIFT_USERNAME% -f -
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
