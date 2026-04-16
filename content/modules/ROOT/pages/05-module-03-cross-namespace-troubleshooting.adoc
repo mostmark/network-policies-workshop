@@ -275,7 +275,7 @@ By completing this module, you should now understand:
 
 == Module summary
 
-You've completed the final module and can now present a comprehensive network security solution to ACME's leadership.
+Congratulations, you've completed the final module and can now present a comprehensive network security solution to ACME's leadership.
 
 **What you accomplished for ACME:**
 
