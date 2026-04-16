@@ -201,7 +201,7 @@ deny-all   <none>         10s
 
 === Test the deny-all policy
 
-. Try to access the hello pod from the test pod. This should now fail:
+. Try to access the hello service from the test pod. This should now fail:
 +
 [source,bash,role=execute]
 ----
@@ -210,7 +210,7 @@ oc exec deploy/test -- curl -s --connect-timeout 5 hello:8080
 +
 Expected output: The command should time out or return no output, indicating the traffic is blocked.
 
-. Verify the policy is blocking traffic by checking from an external perspective. Try to access the hello service directly:
+. Verify the policy is also blocking traffic on the pod IP address:
 +
 [source,bash,role=execute]
 ----
