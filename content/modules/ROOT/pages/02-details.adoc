@@ -12,9 +12,6 @@
 |OpenShift Console
 |https://{OPENSHIFT_CONSOLE_URL}
 
-|API Server
-|https://{OPENSHIFT_API_URL}
-
 |Username
 |{OPENSHIFT_USERNAME}
 

@@ -21,29 +21,10 @@ By the end of this workshop, you'll have practical network policy skills to addr
 * Create ingress policies to control incoming traffic to pods
 * Create egress policies to control outgoing traffic from pods
 * Test and validate that network policies are enforced correctly
-* Troubleshoot common connectivity issues caused by network policies
 
 **Technical outcome**: You'll have hands-on experience with network policies that directly applies to ACME's current security requirements.
 
 **Business benefit**: A proven approach to network segmentation that improves security posture and meets compliance requirements.
-
-== Target audience
-
-This workshop is designed for:
-
-* Developers who need to secure their applications in shared clusters
-* Platform engineers implementing network security policies
-* DevOps engineers looking to understand network isolation
-* Anyone interested in Kubernetes network security
-
-== What you need to succeed
-
-You should have:
-
-* Basic command line experience (Linux/Unix), you've used a terminal before
-* Understanding of Kubernetes concepts (pods, namespaces, and services)
-* Access to a computer with internet connectivity
-* Willingness to learn (no prior network policy experience required)
 
 == ACME Corporation's security challenges
 
