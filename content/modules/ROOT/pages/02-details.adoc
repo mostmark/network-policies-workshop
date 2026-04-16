@@ -35,10 +35,11 @@ image::web-terminal-icon.png[Web Terminal icon in the OpenShift console masthead
 . Select the project `terminal-{OPENSHIFT_USERNAME}` from the *Project* dropdown if prompted.
 
 . Click *Start* to launch the terminal session.
-
-. The Web Terminal comes preinstalled with `oc`, `kubectl`, and other CLI tools, and is automatically logged in with your user credentials. No `oc login` is required.
 +
 image::web-terminal-panel.png[Web Terminal open in the OpenShift console]
+
+. The Web Terminal comes preinstalled with `oc`, `kubectl`, and other CLI tools, and is automatically logged in with your user credentials. No `oc login` is required.
+
 . When started the terminal looks like the following
 +
 image::web-terminal-panel2.png[Web Terminal open in the OpenShift console]
