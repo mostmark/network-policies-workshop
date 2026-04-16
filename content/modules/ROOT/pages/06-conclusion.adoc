@@ -13,7 +13,6 @@ Throughout this workshop, you've gained hands-on experience with:
 * How to allow traffic from OpenShift platform services (ingress controllers, monitoring)
 * How egress policies control outbound traffic and prevent data exfiltration
 * How to implement cross-namespace policies using namespace labels
-* A systematic troubleshooting methodology for diagnosing network policy issues
 * How network policies are additive, meaning the union of all matching policies determines allowed traffic
 
 You now have the skills to implement comprehensive network segmentation in OpenShift to improve security posture and meet compliance requirements.
@@ -29,8 +28,6 @@ The most important concepts to remember:
 . **Labels are the key**: Network policies use labels on pods and namespaces to identify traffic sources and destinations. Proper labeling strategy is essential for effective network policies.
 
 . **Policies are additive**: When multiple network policies select the same pod, the union of all rules determines what traffic is allowed. There's no deny rule, only allow rules that build on the deny-all baseline.
-
-. **Test before production**: Always test network policies in a non-production environment. Incorrect policies can break application communication.
 
 == Next steps
 
