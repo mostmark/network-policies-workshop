@@ -44,7 +44,7 @@ oc new-app --name backend-api --image quay.io/redhattraining/hello-world-nginx:v
 oc rollout status deployment/backend-api --timeout=60s
 ----
 
-. Apply a deny-all policy to the backend namespace:
+. Apply a `deny-all` policy to the backend namespace:
 +
 [source,bash,role=execute]
 ----
