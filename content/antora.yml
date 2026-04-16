@@ -9,7 +9,7 @@ asciidoc:
     lab_name: "network-policies-introduction"
     release-version: master
     page-pagination: true
-    ocp_version: "4.15"
+    ocp_version: "4.20"
     # OpenShift Cluster Access
     OPENSHIFT_CONSOLE_URL: "%OPENSHIFT_CONSOLE_URL%"
     OPENSHIFT_API_URL: "%OPENSHIFT_API_URL%"
