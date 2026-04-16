@@ -8,6 +8,7 @@ In this workshop, you will:
 
 * Understand how pod networking works in Kubernetes and OpenShift
 * Create ingress and egress network policies
+* Create cross-namespace network policies
 * Test and validate network policy enforcement
 
 == Who this is for
