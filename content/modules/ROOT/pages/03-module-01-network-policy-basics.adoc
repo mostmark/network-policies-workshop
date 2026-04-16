@@ -5,7 +5,7 @@
 
 Your security team at ACME Corporation has raised concerns about the default networking behavior in OpenShift. "All pods can talk to each other by default," they explain. "We need to understand this and implement controls."
 
-By default, all pods and virtual machines in an OpenShift project are accessible from other pods, VMs, and endpoints in the cluster. This open communication model enables flexibility but creates security risks. ACME needs to evaluate how Kubernetes network policies can address this challenge.
+By default, all pods in an OpenShift project are accessible from other pods and endpoints in the cluster. This open communication model enables flexibility but creates security risks. ACME needs to evaluate how Kubernetes network policies can address this challenge.
 
 In this module, you'll experience firsthand how network policies provide granular control over pod-to-pod communication.
 
