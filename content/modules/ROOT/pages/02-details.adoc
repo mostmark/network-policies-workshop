@@ -10,7 +10,7 @@
 |Resource |Value
 
 |OpenShift Console
-|https://{OPENSHIFT_CONSOLE_URL}
+|\https://{OPENSHIFT_CONSOLE_URL}
 
 |Username
 |{OPENSHIFT_USERNAME}
