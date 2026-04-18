@@ -146,7 +146,7 @@ The deny-all network policy follows the principle of least privilege. With this 
 
 For this first network policy, you'll use the OpenShift web console to create the policy. This gives you a visual understanding of what a network policy contains before switching to the CLI for the remaining exercises.
 
-. Open the OpenShift console by navigating to link:https://{OPENSHIFT_CONSOLE_URL}[https://{OPENSHIFT_CONSOLE_URL}^]
+. Open the OpenShift console by navigating to link:https://{OPENSHIFT_CONSOLE_URL}/k8s/cluster/projects/network-policy-test-{OPENSHIFT_USERNAME}[https://{OPENSHIFT_CONSOLE_URL}/k8s/cluster/projects/network-policy-test-{OPENSHIFT_USERNAME}^]
 +
 
 . In the left sidebar, navigate to *Networking* > *NetworkPolicies*.
