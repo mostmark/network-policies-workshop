@@ -3,9 +3,9 @@
 :toc: macro
 :toclevels: 1
 
-ACME Corporation's platform team has expanded the proof-of-concept. "We have multiple teams deploying to different namespaces," the platform lead explains. "The frontend team's applications need to reach the backend team's APIs across namespaces, but nothing else. And when something breaks, we need a systematic way to diagnose network policy issues."
+ACME Corporation's platform team has expanded the proof-of-concept. "We have multiple teams deploying to different namespaces," the platform lead explains. "The frontend team's applications need to reach the backend team's APIs across namespaces, but nothing else"
 
-In this module, you'll implement cross-namespace network policies and learn a structured approach to troubleshooting connectivity problems in a multi-namespace environment.
+In this module, you'll implement cross-namespace network policies for a multi-namespace environment.
 
 == Learning objectives
 
