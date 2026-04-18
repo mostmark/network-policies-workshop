@@ -258,11 +258,11 @@ oc get pods --show-labels
 +
 Note the `deployment=hello` and `deployment=test` labels.
 
-. In the OpenShift console, navigate to *Networking* > *NetworkPolicies*.
+. In the OpenShift console, navigate to *Networking* > *NetworkPolicies*
 
 . Make sure the *network-policy-test-{OPENSHIFT_USERNAME}* project is selected, then click *Create NetworkPolicy*.
 
-. In the *Form view*, set the *Policy name* to `allow-test-to-hello`.
+. In the *Form view*, set the *Policy name* to `allow-test-to-hello`
 
 . Under *Pod selector*, add a label to select the target pods:
 +
