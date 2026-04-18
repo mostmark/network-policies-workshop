@@ -108,8 +108,13 @@ echo
 oc new-project lab-guide --display-name="Lab guide application"
 oc create -f lab-guide-app/
 
+# Get the lab guide route
+LAB_GUIDE_HOST=$(oc get route doc -n lab-guide -o jsonpath='{.spec.host}')
+
 echo "============================================"
 echo "Cluster preparation complete!"
 echo "Created projects for $NUM_USERS user(s)."
 echo "Each user has admin access to their 4 projects."
+echo "The lab guide can be accessed at the following url:"
+echo https://$LAB_GUIDE_HOST?OPENSHIFT_USERNAME=\{username\}\&OPENSHIFT_PASSWORD=\{openshift_password\}\&OPENSHIFT_CONSOLE_URL=\{openshift_console_hostname\}
 echo "============================================"
