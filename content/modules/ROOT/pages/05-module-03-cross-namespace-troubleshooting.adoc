@@ -113,7 +113,7 @@ To allow the frontend team's pods to reach the backend, you need a policy in the
 +
 [source,bash,role=execute]
 ----
-oc get namespace frontend-team-%OPENSHIFT_USERNAME% --show-labels | grep team
+oc get namespace frontend-team-%OPENSHIFT_USERNAME% --show-labels
 ----
 +
 You should see the `team=frontend` label in the output.
