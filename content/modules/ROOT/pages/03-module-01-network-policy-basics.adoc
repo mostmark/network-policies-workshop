@@ -437,4 +437,4 @@ You now have practical experience with network policy fundamentals and can imple
 
 **Next steps:**
 
-Module 2 will show you how to implement more advanced patterns including cross-namespace policies, egress controls, and allowing traffic from OpenShift platform services.
+Module 2 will show you how to implement more advanced patterns including ingress and egress controls, and allowing traffic from OpenShift platform services.
