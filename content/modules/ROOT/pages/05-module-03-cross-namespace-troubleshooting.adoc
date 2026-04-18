@@ -214,57 +214,6 @@ image::cross-namespace-policy.png[Cross-namespace network policy allowing fronte
 
 You've implemented ACME's multi-team network isolation requirement.
 
-== Troubleshooting
-
-**Issue**: Cross-namespace policy created but traffic still blocked
-
-**Solution**:
-
-. Verify the namespace label exists and matches the policy:
-+
-[source,bash]
-----
-oc get namespace frontend-team-%OPENSHIFT_USERNAME% --show-labels
-----
-
-. If the label is missing, contact your cluster administrator to add it. Labeling namespaces requires cluster-admin privileges.
-
-. Check that the policy is in the correct namespace (the destination namespace, not the source):
-+
-[source,bash]
-----
-oc get networkpolicies -n backend-team-%OPENSHIFT_USERNAME%
-----
-
-**Issue**: Policy works for some pods but not others in the same namespace
-
-**Solution**:
-
-. Check if the policy uses a `podSelector` under `from` that restricts which source pods are allowed:
-+
-[source,bash]
-----
-oc describe networkpolicy allow-from-frontend -n backend-team-%OPENSHIFT_USERNAME%
-----
-
-. If the `from` block combines `namespaceSelector` and `podSelector` in the same item, both must match. If they are separate items, either can match (OR logic).
-
-**Issue**: Cannot determine which policy is blocking traffic
-
-**Solution**:
-
-. List all policies in both source and destination namespaces:
-+
-[source,bash]
-----
-oc get networkpolicies -n <source-namespace>
-oc get networkpolicies -n <destination-namespace>
-----
-
-. Check for deny-all policies (empty `podSelector` with no ingress/egress rules).
-
-. Remember: ingress policies are checked on the destination, egress policies on the source. Both must allow the traffic for it to succeed.
-
 == Learning outcomes
 
 By completing this module, you should now understand:
