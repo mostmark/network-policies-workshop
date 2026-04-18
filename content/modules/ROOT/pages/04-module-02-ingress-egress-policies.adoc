@@ -405,4 +405,4 @@ You've moved from basic pod-to-pod isolation to comprehensive ingress and egress
 
 **Next steps:**
 
-Module 3 will cover cross-namespace policies and advanced troubleshooting techniques for managing network policies across a multi-team OpenShift environment.
+Module 3 will cover cross-namespace policies for managing network policies across a multi-team OpenShift environment.
