@@ -89,7 +89,21 @@ Expected output:
 ----
 <h1>Hello, world from nginx!</h1>
 ----
++
+[TIP]
+====
+What does this command do and how does it work? This and similar commands will be used during the workshop to test the Network Policies we are creating. Let's break it down:
 
+. The first line in the command gets the IP address of the `hello` pod and stores it in the variable HELLO_POD_IP
++
+*`HELLO_POD_IP=$(oc get pod -l deployment=hello -o jsonpath='{.items[0].status.podIP}')`*
++
+. The second line use *`oc exec`* to execute a *`curl`* request from the *`test`* pod to that IP address on port 8080 and then use the *`grep`* tool to filter the output and only show lines that contain the word “Hello”.
++
+*`oc exec deploy/test -- curl -s $HELLO_POD_IP:8080 | grep Hello`*
+====
++
++
 . Also verify you can reach the hello service:
 +
 [source,bash,role=execute]
