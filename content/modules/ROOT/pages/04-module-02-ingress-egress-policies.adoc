@@ -257,7 +257,7 @@ This should also time out. Even though the ingress policy allows traffic from te
 
 === Allow DNS and specific egress traffic
 
-A deny-all egress policy that blocks DNS makes pods unable to resolve any service names. You need to allow DNS traffic and then selectively allow the destinations the test pod needs.
+A deny-all egress policy that blocks DNS makes pods unable to resolve any service names. You need to allow DNS traffic and then selectively allow the destinations the test pod needs. OpenShift labels the OpenShift DNS namespace with kubernetes.io/metadata.name: openshift-dns. You can use this label in a namespaceSelector to allow traffic to the OpenShift DNS.
 
 . Replace the deny-all egress policy with one that allows DNS and communication with the hello pod:
 +
