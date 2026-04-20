@@ -192,7 +192,7 @@ Egress policies work similarly to ingress policies but control outbound traffic:
 
 Important considerations for egress:
 
-* Blocking DNS (port 5353) will prevent pods from resolving service names
+* Blocking DNS will prevent pods from resolving service names
 * You typically need to allow DNS traffic in any egress policy
 * Egress rules can specify destination pods, namespaces, or IP blocks
 
@@ -279,11 +279,6 @@ spec:
     - namespaceSelector:
         matchLabels:
           kubernetes.io/metadata.name: openshift-dns
-    ports:
-    - port: 5353
-      protocol: UDP
-    - port: 5353
-      protocol: TCP
   - to:
     - podSelector:
         matchLabels:
