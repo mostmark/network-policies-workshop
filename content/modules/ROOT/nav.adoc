@@ -13,7 +13,7 @@
 ** xref:04-module-02-ingress-egress-policies.adoc#exercise-1-allow-traffic-from-openshift-platform-services[Exercise 1: Allow Platform Traffic]
 ** xref:04-module-02-ingress-egress-policies.adoc#exercise-2-implement-egress-policies[Exercise 2: Implement Egress Policies]
 
-* xref:05-module-03-cross-namespace-troubleshooting.adoc[Module 3: Cross-Namespace Policies]
-** xref:05-module-03-cross-namespace-troubleshooting.adoc#exercise-1-implement-cross-namespace-policies[Exercise 1: Cross-Namespace Policies]
+* xref:05-module-03-cross-namespace.adoc[Module 3: Cross-Namespace Policies]
+** xref:05-module-03-cross-namespace.adoc#exercise-1-implement-cross-namespace-policies[Exercise 1: Cross-Namespace Policies]
 
 * xref:06-conclusion.adoc[Conclusion and Next Steps]
