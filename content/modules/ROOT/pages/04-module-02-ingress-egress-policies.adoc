@@ -3,7 +3,7 @@
 :toc: macro
 :toclevels: 1
 
-After your successful demonstration of network policy basics, ACME Corporation's security team is impressed but has follow-up requirements. "We need to control not just which pods can receive traffic, but also which external services our pods can reach," the security lead explains. "And our applications exposed via routes have stopped working since we applied the deny-all policy."
+After your successful demonstration of network policy basics, ACME Corporation's security team is impressed but has follow-up requirements. "We need to control not just which pods can receive traffic, but also which external services our pods can reach," the security lead explains. "And our applications exposed via routes have stopped working since we applied the deny-all-incoming policy"
 
 In this module, you'll address both concerns by implementing ingress policies that allow OpenShift platform traffic and egress policies that control outbound communication from pods.
 
@@ -19,7 +19,7 @@ By the end of this module, you'll be able to:
 [#exercise-1-allow-traffic-from-openshift-platform-services]
 == Exercise 1: Allow traffic from OpenShift platform services
 
-ACME's development team has reported that their application routes stopped working after the deny-all policy was applied in Module 1. This is expected: the deny-all policy blocks all ingress traffic, including traffic from the OpenShift ingress controller that serves routes.
+ACME's development team has reported that their application routes stopped working after the `deny-all-incoming` policy was applied in Module 1. This is expected: the `deny-all-incoming` policy blocks all ingress traffic, including traffic from the OpenShift ingress controller that serves routes.
 
 You need to create policies that allow OpenShift platform services to reach the application pods while maintaining the deny-all baseline.
 
@@ -52,7 +52,7 @@ route.route.openshift.io/hello exposed
 oc get route hello -o jsonpath='{.spec.host}{"\n"}'
 ----
 
-. Try to access the route using curl. This will fail because the deny-all policy blocks ingress controller traffic:
+. Try to access the route using curl. This will fail because the `deny-all-incoming` policy blocks ingress controller traffic:
 +
 [source,bash,role=execute]
 ----
@@ -60,7 +60,7 @@ HELLO_ROUTE=$(oc get route hello -o jsonpath='{.spec.host}')
 curl -s --connect-timeout 5 http://$HELLO_ROUTE
 ----
 +
-The command should time out or return an error. The deny-all policy is blocking the OpenShift ingress controller from reaching the hello pod.
+The command should time out or return an error. The `deny-all-incoming` policy is blocking the OpenShift ingress controller from reaching the hello pod.
 
 === Allow ingress controller traffic
 
@@ -150,7 +150,7 @@ NAME                             POD-SELECTOR        AGE
 allow-from-openshift-ingress     deployment=hello    2m
 allow-from-openshift-monitoring  <none>              30s
 allow-test-to-hello              deployment=hello    10m
-deny-all                         <none>              15m
+deny-all-incoming                <none>              15m
 ----
 
 === Verify
@@ -333,7 +333,7 @@ NAME                             POD-SELECTOR        AGE
 allow-from-openshift-ingress     deployment=hello    10m
 allow-from-openshift-monitoring  <none>              8m
 allow-test-to-hello              deployment=hello    20m
-deny-all                         <none>              25m
+deny-all-incoming                <none>              25m
 deny-all-egress-test             deployment=test     5m
 ----
 
