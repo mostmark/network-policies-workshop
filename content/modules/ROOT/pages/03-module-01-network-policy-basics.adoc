@@ -170,7 +170,7 @@ image::console-networkpolicy-form.png[NetworkPolicy form view showing deny-all c
 
 . Click *Create*.
 
-image::deny-all-policy-applied.png[OpenShift console showing network policy,link=self,window=blank,width=700,title="deny-all Network Policy Applied"]
+image::deny-all-policy-applied.png[OpenShift console showing network policy,link=self,window=blank,width=700,title="deny-all-ingress Network Policy Applied"]
 
 [TIP]
 ====
