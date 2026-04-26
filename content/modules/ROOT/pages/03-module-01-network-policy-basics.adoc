@@ -130,7 +130,7 @@ image::default-communication-test.png[Terminal showing successful curl output be
 This demonstrates ACME's security concern: any pod can reach any other pod in the cluster without restrictions.
 
 [#exercise-2-create-a-deny-all-policy]
-== Exercise 2: Create a deny-all policy
+== Exercise 2: Create a deny-all policy for incoming traffic
 
 Now that you've demonstrated the security risk, let's implement ACME's first network security control: a deny-all policy that blocks all incoming traffic to pods in the namespace.
 
@@ -160,11 +160,10 @@ image::console-networkpolicies-list.png[NetworkPolicies list in the OpenShift co
 . In the *Form view* (the default), configure the following:
 +
 --
-* *Policy name*: `deny-all`
+* *Policy name*: `deny-all-incoming`
 * *Pod selector*: Leave empty — this matches all pods in the namespace
-* *Policy type*: Leave empty — do not select Ingress or Egress
-* *Ingress rules*: Do not add any — having no ingress rules means no incoming traffic is allowed
-* *Egress rules*: Do not add any — having no egress rules means no outgoing traffic is allowed
+* *Policy type*: Select the checkbox *Deny all ingress traffic* but leave the egress checkbox empty
+* *Egress rules*: Do not add any
 --
 +
 image::console-networkpolicy-form.png[NetworkPolicy form view showing deny-all configuration,title="Create deny-all Network Policy"]
@@ -184,7 +183,7 @@ NOTE: For easier reading some meta data fields has been removed in this example 
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: deny-all
+  name: deny-all-incoming
   namespace: network-policy-test-%OPENSHIFT_USERNAME%
 spec:
   podSelector: {}
@@ -209,8 +208,8 @@ oc get networkpolicies
 Expected output:
 +
 ----
-NAME       POD-SELECTOR   AGE
-deny-all   <none>         10s
+NAME                POD-SELECTOR   AGE
+deny-all-incoming   <none>         10s
 ----
 
 === Test the deny-all policy
@@ -238,7 +237,7 @@ This should also time out.
 
 Verification checklist:
 
-* Network policy `deny-all` exists
+* Network policy `deny-all-incoming` exists
 * Pod-to-pod communication is blocked
 * Service-based communication is blocked
 
@@ -261,7 +260,7 @@ Network policies use labels to select:
 
 === Create the allow-specific policy using the OpenShift console
 
-Just like you created the deny-all policy, you'll use the OpenShift console's *Form view* to create this selective allow policy. The console provides helpful features that let you preview which pods are affected by each part of the policy.
+Just like you created the `deny-all-incoming` policy, you'll use the OpenShift console's *Form view* to create this selective allow policy. The console provides helpful features that let you preview which pods are affected by each part of the policy.
 
 . First, check the labels on your pods so you know which labels to use in the policy:
 +
@@ -333,7 +332,7 @@ Expected output:
 ----
 NAME                  POD-SELECTOR        AGE
 allow-test-to-hello   deployment=hello    10s
-deny-all              <none>              5m
+deny-all-incoming     <none>              5m
 ----
 
 === Test the selective allow policy
